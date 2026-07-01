@@ -1,4 +1,4 @@
-# AI-Based Medical Diagnosis Expert System v2.0
+# AI-Based Medical Diagnosis Expert System
 
 An AI-powered expert system that assists users in identifying possible diseases based on symptoms. Built with Prolog for knowledge representation and reasoning, and Python for the graphical user interface.
 
