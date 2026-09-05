@@ -8,6 +8,7 @@ import threading
 import re
 from datetime import datetime
 
+# Setting the appearance (idk how that works yet)
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
 
