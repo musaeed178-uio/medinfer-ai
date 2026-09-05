@@ -1,167 +1,290 @@
-import os
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Controller bridging the GUI to the Prolog engine and the knowledge catalog.
+
+* Knowledge content (diseases, symptoms, metadata) lives in kb_catalog.json
+  and is exposed here through :class:`kb_catalog.KBCatalog`.
+* Inference (candidate selection + severity-weighted confidence) runs in the
+  SWI-Prolog engine over medical_kb.pl, whose facts are generated from the
+  same catalog.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Optional
+
 from pyswip import Prolog
+
+from kb_catalog import (
+    KBCatalog,
+    DiagnosisResult,
+    DiseaseDef,
+    age_band,
+    humanize,
+    resource_path,
+)
+
+VALID_SEVERITIES = ("mild", "moderate", "severe")
+AGE_RISK_BONUS = 5          # percentage points added when an age-band risk matches
+EMERGENCY_CONFIDENCE = 50   # minimum confidence before an emergency disease is a "go now"
+URGENT_TEMPERATURE_C = 39.5
+URGENT_FEVER_DAYS = 3
+
+
+class MedicalEngineError(RuntimeError):
+    """Raised when the Prolog engine cannot be started or consulted."""
 
 
 class MedicalController:
-    def __init__(self):
+    def __init__(self, catalog: Optional[KBCatalog] = None):
+        self.catalog = catalog or KBCatalog.load()
         self.prolog = Prolog()
-        kb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "medical_kb.pl")
-        self.prolog.consult(kb_path)
+        try:
+            kb_path = resource_path("medical_kb.pl")
+            self.prolog.consult(kb_path)
+        except Exception as exc:  # noqa: BLE001 - surface a friendly message
+            raise MedicalEngineError(
+                "The AI engine (SWI-Prolog) could not start. Install SWI-Prolog "
+                "from https://www.swi-prolog.org/ and make sure 'swipl' is on your PATH."
+            ) from exc
 
-    def get_all_symptoms(self):
-        results = list(self.prolog.query("get_all_symptoms(S)"))
-        if results:
-            return results[0]["S"]
-        return []
+    # ------------------------------------------------------------------
+    # Catalog access for the GUI (no Prolog round-trips needed)
+    # ------------------------------------------------------------------
+    def symptoms_by_system(self) -> list[tuple[str, list[str]]]:
+        """[(body system, [symptom ids])] as shown in the symptom browser."""
+        return self.catalog.symptoms_by_system()
 
-    def get_all_diseases(self):
-        results = list(self.prolog.query("get_all_diseases(D)"))
-        if results:
-            return results[0]["D"]
-        return []
+    def all_symptoms(self) -> list[str]:
+        return list(self.catalog.symptoms)
 
-    def get_disease_symptoms(self, disease):
-        results = list(self.prolog.query(f"get_disease_symptoms('{disease}', S)"))
-        if results:
-            return results[0]["S"]
-        return []
+    def all_diseases(self) -> list[str]:
+        return list(self.catalog.diseases)
 
-    def get_disease_info(self, disease):
-        desc_results = list(self.prolog.query(f"description({disease}, D)"))
-        cat_results = list(self.prolog.query(f"category({disease}, C)"))
-        rec_results = list(self.prolog.query(f"recommendation({disease}, R)"))
-        emerg_results = list(self.prolog.query(f"is_emergency({disease})"))
+    def disease_info(self, disease_id: str) -> DiseaseDef:
+        return self.catalog.diseases[disease_id]
 
-        desc = str(desc_results[0]["D"]) if desc_results else "No description available."
-        cat = str(cat_results[0]["C"]) if cat_results else "unknown"
-        rec = str(rec_results[0]["R"]) if rec_results else "Consult a healthcare professional."
-        is_emerg = len(emerg_results) > 0
+    def search_symptoms(self, query: str) -> list[str]:
+        q = query.lower().replace("_", " ")
+        return [s for s in self.all_symptoms() if q in s.replace("_", " ")]
 
-        return {
-            "name": disease,
-            "description": desc,
-            "category": cat,
-            "recommendation": rec,
-            "is_emergency": is_emerg,
-        }
+    def search_diseases(self, query: str) -> list[str]:
+        q = query.lower().replace("_", " ")
+        return [d for d in self.all_diseases() if q in d.replace("_", " ")]
 
-    def get_all_categories(self):
-        results = list(self.prolog.query("all_categories(C)"))
-        if results:
-            return results[0]["C"]
-        return []
+    # ------------------------------------------------------------------
+    # Diagnosis
+    # ------------------------------------------------------------------
+    def diagnose(
+        self,
+        selected: dict[str, str],
+        age: Optional[int] = None,
+    ) -> list[DiagnosisResult]:
+        """Run the Prolog engine over the selected symptom->severity map.
 
-    def get_diseases_by_category(self, category):
-        results = list(self.prolog.query(f"diseases_by_category('{category}', D)"))
-        if results:
-            return results[0]["D"]
-        return []
-
-    def diagnose(self, selected_symptoms):
-        if not selected_symptoms:
+        ``selected`` maps a symptom id to "mild" | "moderate" | "severe".
+        Returns candidates ranked by confidence (age-risk adjusted, capped
+        at 100).
+        """
+        if not selected:
             return []
 
         self.prolog.retractall("patient_has(_)")
+        self.prolog.retractall("patient_sev(_, _)")
+        for symptom, severity in selected.items():
+            sev = severity.lower() if severity.lower() in VALID_SEVERITIES else "moderate"
+            self.prolog.assertz(f"patient_has({symptom})")
+            self.prolog.assertz(f"patient_sev({symptom}, {sev})")
 
-        symptoms_str = ",".join(selected_symptoms)
-        for s in selected_symptoms:
-            self.prolog.assertz(f"patient_has({s})")
+        candidates = [str(r["D"]) for r in self.prolog.query("possible_disease(D)")]
+        band = age_band(age)
 
-        diseases = list(self.prolog.query(f"possible_disease(D, [{symptoms_str}])"))
-        disease_names = [str(sol["D"]) for sol in diseases]
+        results: list[DiagnosisResult] = []
+        for disease_id in candidates:
+            defn = self.catalog.diseases.get(disease_id)
+            if defn is None:
+                continue  # catalog is authoritative; never query content prolog lacks
+            confidence = self._query_int(f"confidence({disease_id}, C)")
+            matched = self._query_int(f"matched_symptoms({disease_id}, M)")
+            total = self._query_int(f"total_symptoms({disease_id}, T)")
 
-        results = []
-        for disease in disease_names:
-            conf_sol = list(self.prolog.query(f"confidence({disease}, [{symptoms_str}], C)"))
-            match_sol = list(self.prolog.query(f"matched_symptoms({disease}, [{symptoms_str}], M)"))
-            total_sol = list(self.prolog.query(f"total_symptoms({disease}, T)"))
+            risk_note: Optional[str] = None
+            base_confidence = confidence
+            if band and band in defn.age_risk_bands():
+                risk_note = (
+                    f"Age {age} ({band}): elevated risk for {defn.name}; "
+                    f"confidence adjusted +{AGE_RISK_BONUS}%"
+                )
+                confidence = min(100, base_confidence + AGE_RISK_BONUS)
 
-            conf = int(conf_sol[0]["C"]) if conf_sol else 0
-            matched = int(match_sol[0]["M"]) if match_sol else 0
-            total = int(total_sol[0]["T"]) if total_sol else 0
+            results.append(DiagnosisResult(
+                disease=disease_id,
+                confidence=confidence,
+                base_confidence=base_confidence,
+                matched=matched,
+                total=total,
+                category=defn.category,
+                emergency=defn.emergency,
+                risk_note=risk_note,
+            ))
 
-            results.append({
-                "disease": disease,
-                "confidence": conf,
-                "matched": matched,
-                "total": total,
-            })
-
-        results.sort(key=lambda x: x["confidence"], reverse=True)
+        results.sort(key=lambda r: (-r.confidence, -r.matched))
         return results
 
-    def get_explanation(self, disease, selected_symptoms):
-        matched = []
-        missing = []
-        kb_symptoms = self.get_disease_symptoms(disease)
+    # ------------------------------------------------------------------
+    # Triage guidance ("what to do next")
+    # ------------------------------------------------------------------
+    def triage(
+        self,
+        results: list[DiagnosisResult],
+        selected: dict[str, str],
+        temperature_c: Optional[float] = None,
+        durations: Optional[dict[str, str]] = None,
+    ) -> tuple[str, str, str]:
+        """Return (level, title, guidance) with level in {"EMERGENCY", "URGENT", "SELF_CARE"}."""
+        durations = durations or {}
+        selected_red_flags = self.catalog.red_flag_symptoms() & set(selected)
 
-        for s in kb_symptoms:
-            s_str = str(s)
-            if s_str in selected_symptoms:
-                matched.append(s_str)
-            else:
-                missing.append(s_str)
+        if not results:
+            return "SELF_CARE", "Self-care", (
+                "No likely condition matched your symptoms. Rest, monitor how you feel, "
+                "and re-run the diagnosis if new symptoms appear or symptoms worsen."
+            )
 
-        symptoms_str = ",".join(selected_symptoms)
-        conf_result = list(self.prolog.query(f"confidence({disease}, [{symptoms_str}], C)"))
-        conf = conf_result[0]["C"] if conf_result else 0
+        top = results[0]
 
-        explanation = (
-            f"Possible Diagnosis: {disease.replace('_', ' ').title()}\n"
-            f"Confidence: {conf}%\n"
-            f"Matched Symptoms: {', '.join(matched)}\n"
-            f"Missing Symptoms: {', '.join(missing)}"
+        # Fever thresholds worth surfacing regardless of the top diagnosis.
+        fever_days = self._duration_days(durations.get("fever"))
+        high_temperature = temperature_c is not None and temperature_c >= URGENT_TEMPERATURE_C
+
+        if top.emergency and top.confidence >= EMERGENCY_CONFIDENCE:
+            return "EMERGENCY", "Seek emergency care now", (
+                f"{top.name} is a potentially serious condition and your symptom "
+                f"pattern fits it strongly ({top.confidence}%). If breathing is "
+                "difficult, symptoms are worsening, or you feel confused, go to the "
+                "nearest emergency department or call your local emergency number."
+            )
+
+        if selected_red_flags:
+            names = ", ".join(humanize(s) for s in sorted(selected_red_flags))
+            return "URGENT", "See a clinician within 24 hours", (
+                f"You reported a red-flag symptom ({names}). These can indicate a "
+                "serious condition even when the top match looks mild. Please contact "
+                "a doctor or urgent-care clinic today."
+            )
+
+        if top.emergency:
+            return "URGENT", "See a clinician today", (
+                f"{top.name} can be serious ({top.confidence}% match). Even if you "
+                "feel okay right now, arrange to see a clinician promptly."
+            )
+
+        if high_temperature or (fever_days is not None and fever_days >= URGENT_FEVER_DAYS):
+            detail = (
+                f"Your temperature is {temperature_c:.1f} °C." if high_temperature
+                else f"Your fever has lasted {fever_days:.0f} day(s)."
+            )
+            return "URGENT", "Check in with a clinician", (
+                f"{detail} A prolonged or very high fever deserves medical review. "
+                "Please contact a doctor if it does not improve with rest and fluids."
+            )
+
+        return "SELF_CARE", "Self-care and monitoring", (
+            "Your symptoms most closely match a mild, self-limiting condition. Rest, "
+            "stay hydrated, and monitor yourself. If symptoms persist beyond a few "
+            "days, worsen, or new red-flag symptoms appear, see a clinician."
         )
-        return explanation
 
-    def forward_chain(self, selected_symptoms):
-        if not selected_symptoms:
-            return []
+    # ------------------------------------------------------------------
+    # Explanation text (single implementation shared by GUI + exports)
+    # ------------------------------------------------------------------
+    def build_explanation(
+        self,
+        disease_id: str,
+        selected: dict[str, str],
+        extraction: Optional[Any] = None,
+    ) -> str:
+        defn = self.catalog.diseases[disease_id]
+        selected_ids = set(selected)
+        matched = [s for s in defn.symptoms if s in selected_ids]
+        missing = [s for s in defn.symptoms if s not in selected_ids]
 
-        symptoms_str = ",".join(selected_symptoms)
-        results = []
-        for sol in self.prolog.query(f"forward_chain([{symptoms_str}], Conclusions)"):
-            raw = sol["Conclusions"]
-            for item in raw:
-                item_str = str(item)
-                parts = item_str.strip("()").split(",")
-                disease = parts[0].strip()
-                conf = int(parts[1].strip())
-                results.append({"disease": disease, "confidence": conf})
+        lines: list[str] = []
+        lines.append(f"AI Analysis: {defn.name}")
+        lines.append("")
+        lines.append(
+            f"This is a {defn.category} condition. The engine matched {len(matched)} of "
+            f"{len(defn.symptoms)} typical indicators for {defn.name}, so it ranks as "
+            "the most probable candidate given what you reported."
+        )
+        if matched:
+            sev = ", ".join(f"{humanize(s)} ({selected[s].title()})" for s in matched)
+            lines.append("")
+            lines.append(f"Matched symptoms: {sev}")
+        if missing:
+            lines.append("")
+            lines.append(f"Missing indicators: {', '.join(humanize(s) for s in missing[:4])}")
+        if extraction is not None:
+            notes = self._context_notes(extraction)
+            if notes:
+                lines.append("")
+                lines.extend(notes)
+        lines.append("")
+        lines.append(f"Recommendation: {defn.recommendation}")
+        lines.append("")
+        lines.append(
+            "Disclaimer: this analysis is for educational purposes only and is not a "
+            "medical diagnosis. Always consult a qualified healthcare provider."
+        )
+        return "\n".join(lines)
 
-        results.sort(key=lambda x: x["confidence"], reverse=True)
-        return results
+    # ------------------------------------------------------------------
+    # Small helpers
+    # ------------------------------------------------------------------
+    def _context_notes(self, extraction: Any) -> list[str]:
+        notes: list[str] = []
+        sev = getattr(extraction, "severities", {})
+        high_sev = [humanize(s) for s, level in sev.items() if level == "severe"]
+        if high_sev:
+            notes.append(f"Severe symptoms noted: {', '.join(high_sev)}.")
+        if getattr(extraction, "durations", None):
+            dur = ", ".join(
+                f"{humanize(s)} for {d}" for s, d in extraction.durations.items()
+            )
+            notes.append(f"Duration: {dur}.")
+        temp = getattr(extraction, "temperature_c", None)
+        if temp is not None:
+            notes.append(f"Reported temperature: {temp:.1f} °C.")
+        return notes
 
-    def verify_disease(self, disease, selected_symptoms):
-        symptoms_str = ",".join(selected_symptoms)
-        result = list(self.prolog.query(f"verify_disease({disease}, [{symptoms_str}])"))
-        return len(result) > 0
+    @staticmethod
+    def _duration_days(label: Optional[str]) -> Optional[float]:
+        """Best-effort '3 day' -> 3.0 from a duration label."""
+        if not label:
+            return None
+        import re
+        m = re.search(r"(\d+(?:\.\d+)?)\s*(\w+)", label)
+        if not m:
+            return None
+        value, unit = float(m.group(1)), m.group(2).rstrip("s")
+        if unit == "day":
+            return value
+        if unit == "week":
+            return value * 7
+        if unit == "hour":
+            return value / 24.0
+        if unit == "month":
+            return value * 30.0
+        return None
 
-    def search_symptoms(self, query):
-        all_symptoms = self.get_all_symptoms()
-        query_lower = query.lower()
-        return [s for s in all_symptoms if query_lower in s.replace("_", " ").lower()]
+    def _query_int(self, goal: str) -> int:
+        for row in self.prolog.query(goal):
+            for value in row.values():
+                try:
+                    return int(value)
+                except (TypeError, ValueError):
+                    continue
+        return 0
 
-    def search_diseases(self, query):
-        all_diseases = self.get_all_diseases()
-        query_lower = query.lower()
-        return [d for d in all_diseases if query_lower in d.replace("_", " ").lower()]
-
-    def get_symptom_category_map(self):
-        body_systems = {
-            "General": ["fever", "fatigue", "chills", "sweating", "weight_loss", "loss_of_appetite"],
-            "Respiratory": ["cough", "shortness_of_breath", "sore_throat", "wheezing", "runny_nose", "nasal_congestion", "sneezing", "coughing_blood"],
-            "Neurological": ["headache", "dizziness", "blurred_vision", "sensitivity_to_light", "confusion", "insomnia", "difficulty_concentrating"],
-            "Gastrointestinal": ["nausea", "vomiting", "diarrhea", "abdominal_pain", "bloating"],
-            "Musculoskeletal": ["body_ache", "joint_pain", "muscle_pain", "back_pain", "stiff_joints", "stiff_neck"],
-            "Skin": ["rash", "pale_skin", "yellowing_of_skin", "skin_rash"],
-            "Cardiovascular": ["chest_pain", "rapid_heartbeat", "cold_hands_and_feet"],
-            "Urinary": ["frequent_urination", "burning_urination", "blood_in_urine"],
-            "Psychological": ["sadness", "loss_of_interest"],
-            "ENT": ["itchy_eyes", "red_eyes", "swollen_glands", "facial_pain"],
-            "Other": ["increased_thirst"],
-        }
-        return body_systems
-
-    def cleanup(self):
+    def cleanup(self) -> None:
         self.prolog.retractall("patient_has(_)")
+        self.prolog.retractall("patient_sev(_, _)")
