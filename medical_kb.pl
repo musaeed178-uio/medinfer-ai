@@ -11,7 +11,7 @@
 :- dynamic patient_has/1, patient_sev/2.
 
 % ------------------- GENERATED FACTS (BEGIN) -------------------
-% Knowledge facts generated from kb_catalog.json (version 2.0).
+% Knowledge facts generated from kb_catalog.json (version 3.0).
 %% Do not edit by hand - regenerate with: python generate_kb.py
 
 % Diseases
@@ -40,6 +40,36 @@ disease(heat_stroke).
 disease(insomnia).
 disease(depression).
 disease(arthritis).
+disease(gerd).
+disease(tension_headache).
+disease(mononucleosis).
+disease(conjunctivitis).
+disease(otitis_media).
+disease(laryngitis).
+disease(appendicitis).
+disease(kidney_stones).
+disease(stroke).
+disease(heart_attack).
+disease(copd).
+disease(hypothyroidism).
+disease(hyperthyroidism).
+disease(gout).
+disease(fibromyalgia).
+disease(ibs).
+disease(diverticulitis).
+disease(pancreatitis).
+disease(cholecystitis).
+disease(lupus).
+disease(rheumatoid_arthritis).
+disease(multiple_sclerosis).
+disease(parkinsons).
+disease(epilepsy).
+disease(chronic_fatigue_syndrome).
+disease(food_poisoning).
+disease(whooping_cough).
+disease(scarlet_fever).
+disease(celiac_disease).
+disease(hemorrhoids).
 
 % Disease categories
 category(flu, viral).
@@ -67,6 +97,36 @@ category(heat_stroke, environmental).
 category(insomnia, neurological).
 category(depression, psychological).
 category(arthritis, musculoskeletal).
+category(gerd, gastrointestinal).
+category(tension_headache, neurological).
+category(mononucleosis, viral).
+category(conjunctivitis, inflammatory).
+category(otitis_media, inflammatory).
+category(laryngitis, respiratory).
+category(appendicitis, gastrointestinal).
+category(kidney_stones, urological).
+category(stroke, cardiovascular).
+category(heart_attack, cardiovascular).
+category(copd, respiratory).
+category(hypothyroidism, metabolic).
+category(hyperthyroidism, metabolic).
+category(gout, metabolic).
+category(fibromyalgia, musculoskeletal).
+category(ibs, gastrointestinal).
+category(diverticulitis, gastrointestinal).
+category(pancreatitis, gastrointestinal).
+category(cholecystitis, gastrointestinal).
+category(lupus, autoimmune).
+category(rheumatoid_arthritis, autoimmune).
+category(multiple_sclerosis, autoimmune).
+category(parkinsons, neurological).
+category(epilepsy, neurological).
+category(chronic_fatigue_syndrome, autoimmune).
+category(food_poisoning, gastrointestinal).
+category(whooping_cough, bacterial).
+category(scarlet_fever, bacterial).
+category(celiac_disease, autoimmune).
+category(hemorrhoids, gastrointestinal).
 
 % Disease descriptions
 description(flu, 'Influenza is a viral infection that attacks the respiratory system. It is highly contagious and spreads through droplets.').
@@ -94,6 +154,36 @@ description(heat_stroke, 'Heat stroke is a severe heat-related illness occurring
 description(insomnia, 'Insomnia is a sleep disorder characterized by difficulty falling or staying asleep.').
 description(depression, 'Depression is a mental health disorder causing persistent feelings of sadness and loss of interest.').
 description(arthritis, 'Arthritis is inflammation of one or more joints, causing pain and stiffness that worsens with age.').
+description(gerd, 'Gastroesophageal reflux disease (GERD) is a chronic condition where stomach acid frequently flows back into the esophagus, causing irritation.').
+description(tension_headache, 'Tension headaches are the most common type of headache, causing a dull, aching sensation all over the head.').
+description(mononucleosis, 'Mononucleosis (mono) is a viral infection caused by Epstein-Barr virus, causing fever, sore throat, and swollen glands.').
+description(conjunctivitis, 'Conjunctivitis (pink eye) is inflammation of the conjunctiva, causing red, itchy, and sometimes discharge from the eye.').
+description(otitis_media, 'Otitis media is an infection of the middle ear, causing ear pain, fever, and sometimes hearing loss.').
+description(laryngitis, 'Laryngitis is inflammation of the voice box (larynx), causing hoarseness and voice loss.').
+description(appendicitis, 'Appendicitis is inflammation of the appendix, a medical emergency requiring immediate surgical removal.').
+description(kidney_stones, 'Kidney stones are hard deposits of minerals and salts that form inside the kidneys, causing severe pain.').
+description(stroke, 'Stroke occurs when blood supply to part of the brain is interrupted, causing brain cell death. It is a medical emergency.').
+description(heart_attack, 'Myocardial infarction (heart attack) occurs when blood flow to the heart muscle is blocked, causing tissue damage.').
+description(copd, 'Chronic Obstructive Pulmonary Disease (COPD) is a progressive lung disease causing breathing difficulties.').
+description(hypothyroidism, 'Hypothyroidism is an underactive thyroid gland that doesn\'t produce enough thyroid hormones, slowing metabolism.').
+description(hyperthyroidism, 'Hyperthyroidism is an overactive thyroid gland producing too much thyroid hormone, speeding up metabolism.').
+description(gout, 'Gout is a form of inflammatory arthritis caused by excess uric acid in the blood, causing sudden severe joint pain.').
+description(fibromyalgia, 'Fibromyalgia is a chronic condition causing widespread musculoskeletal pain, fatigue, and cognitive difficulties.').
+description(ibs, 'Irritable Bowel Syndrome (IBS) is a chronic gastrointestinal disorder causing abdominal pain, bloating, and altered bowel habits.').
+description(diverticulitis, 'Diverticulitis is inflammation or infection of small pouches (diverticula) that develop in the colon.').
+description(pancreatitis, 'Pancreatitis is inflammation of the pancreas, which can be acute or chronic, causing severe abdominal pain.').
+description(cholecystitis, 'Cholecystitis is inflammation of the gallbladder, usually caused by gallstones blocking the bile duct.').
+description(lupus, 'Systemic Lupus Erythematosus (SLE) is a chronic autoimmune disease where the immune system attacks healthy tissue.').
+description(rheumatoid_arthritis, 'Rheumatoid arthritis is an autoimmune disorder where the immune system attacks joint linings, causing painful swelling.').
+description(multiple_sclerosis, 'Multiple sclerosis is an autoimmune disease affecting the central nervous system, disrupting communication between brain and body.').
+description(parkinsons, 'Parkinson\'s disease is a progressive nervous system disorder affecting movement, causing tremors and stiffness.').
+description(epilepsy, 'Epilepsy is a neurological disorder causing recurrent seizures due to abnormal electrical activity in the brain.').
+description(chronic_fatigue_syndrome, 'Chronic fatigue syndrome (ME/CFS) is a complex disorder causing extreme fatigue that doesn\'t improve with rest.').
+description(food_poisoning, 'Food poisoning is an illness caused by eating contaminated food, leading to nausea, vomiting, and diarrhea.').
+description(whooping_cough, 'Whooping cough (pertussis) is a highly contagious bacterial infection causing severe coughing fits.').
+description(scarlet_fever, 'Scarlet fever is a bacterial infection causing a distinctive red rash, high fever, and sore throat.').
+description(celiac_disease, 'Celiac disease is an autoimmune disorder where ingesting gluten leads to damage in the small intestine.').
+description(hemorrhoids, 'Hemorrhoids are swollen veins in the lower rectum and anus, causing pain, itching, and bleeding.').
 
 % Recommendations
 recommendation(flu, 'Rest, stay hydrated, take antiviral medications if prescribed, and isolate to prevent spreading.').
@@ -121,6 +211,36 @@ recommendation(heat_stroke, 'Move to a cool place, apply cold water, seek emerge
 recommendation(insomnia, 'Maintain regular sleep schedule, avoid screens before bed, and practice relaxation.').
 recommendation(depression, 'Seek professional counseling, maintain social connections, and consider therapy.').
 recommendation(arthritis, 'Exercise gently, apply heat/cold therapy, and consult a rheumatologist.').
+recommendation(gerd, 'Avoid trigger foods, eat smaller meals, elevate head while sleeping, and take antacids or proton pump inhibitors.').
+recommendation(tension_headache, 'Rest, manage stress, take over-the-counter pain relievers, and practice relaxation techniques.').
+recommendation(mononucleosis, 'Rest, stay hydrated, avoid strenuous activity, and manage symptoms with pain relievers.').
+recommendation(conjunctivitis, 'Avoid touching eyes, wash hands frequently, use prescribed eye drops, and avoid sharing towels.').
+recommendation(otitis_media, 'Seek medical attention for antibiotics, manage pain with OTC pain relievers, and apply warm compresses.').
+recommendation(laryngitis, 'Rest your voice, stay hydrated, use a humidifier, and avoid irritants like smoke.').
+recommendation(appendicitis, 'Seek emergency medical care immediately. Do not eat or drink anything. Surgery is required.').
+recommendation(kidney_stones, 'Seek medical attention, drink plenty of fluids, and take pain medication. Large stones may require surgery.').
+recommendation(stroke, 'Call emergency services immediately. Time is critical. Note the time symptoms started.').
+recommendation(heart_attack, 'Call emergency services immediately. Chew aspirin if not allergic. Do not drive yourself to hospital.').
+recommendation(copd, 'Quit smoking, use prescribed inhalers, attend pulmonary rehabilitation, and avoid lung irritants.').
+recommendation(hypothyroidism, 'Take thyroid hormone replacement medication as prescribed, and get regular blood tests.').
+recommendation(hyperthyroidism, 'Take anti-thyroid medication, radioactive iodine therapy, or surgery as recommended by your doctor.').
+recommendation(gout, 'Take anti-inflammatory medication, avoid high-purine foods, stay hydrated, and rest the affected joint.').
+recommendation(fibromyalgia, 'Exercise regularly, manage stress, take prescribed medications, and maintain good sleep hygiene.').
+recommendation(ibs, 'Follow a low-FODMAP diet, manage stress, exercise regularly, and use prescribed medications.').
+recommendation(diverticulitis, 'Seek medical attention, take prescribed antibiotics, follow a liquid diet initially, then high-fiber diet.').
+recommendation(pancreatitis, 'Seek emergency care for acute pancreatitis. Stop alcohol, follow a low-fat diet, and take prescribed medications.').
+recommendation(cholecystitis, 'Seek medical care, follow a low-fat diet, and surgery may be required to remove the gallbladder.').
+recommendation(lupus, 'Take immunosuppressive medication, avoid sun exposure, manage fatigue, and see a rheumatologist regularly.').
+recommendation(rheumatoid_arthritis, 'Take disease-modifying antirheumatic drugs (DMARDs), exercise gently, and consult a rheumatologist.').
+recommendation(multiple_sclerosis, 'Take disease-modifying therapies, manage symptoms with physical therapy, and avoid heat exposure.').
+recommendation(parkinsons, 'Take dopamine-enhancing medications, exercise regularly, and work with a neurologist.').
+recommendation(epilepsy, 'Take anti-epileptic medications as prescribed, avoid seizure triggers, and get adequate sleep.').
+recommendation(chronic_fatigue_syndrome, 'Pace activities, prioritize sleep, manage stress, and work with a specialist for symptom management.').
+recommendation(food_poisoning, 'Stay hydrated, rest, avoid solid food until vomiting stops, and seek medical care if symptoms are severe.').
+recommendation(whooping_cough, 'Seek medical treatment with antibiotics, stay isolated, and ensure vaccination for prevention.').
+recommendation(scarlet_fever, 'Seek medical treatment with antibiotics, stay isolated, and maintain good hygiene.').
+recommendation(celiac_disease, 'Follow a strict gluten-free diet, take nutritional supplements, and monitor with a gastroenterologist.').
+recommendation(hemorrhoids, 'Increase fiber intake, use stool softeners, take sitz baths, and consult a doctor for persistent cases.').
 
 % Emergency flags
 is_emergency(covid19).
@@ -130,6 +250,13 @@ is_emergency(pneumonia).
 is_emergency(hepatitis_a).
 is_emergency(tuberculosis).
 is_emergency(heat_stroke).
+is_emergency(appendicitis).
+is_emergency(kidney_stones).
+is_emergency(stroke).
+is_emergency(heart_attack).
+is_emergency(diverticulitis).
+is_emergency(pancreatitis).
+is_emergency(cholecystitis).
 
 % Symptoms
 symptom(fever).
@@ -137,8 +264,14 @@ symptom(fatigue).
 symptom(chills).
 symptom(sweating).
 symptom(weight_loss).
+symptom(weight_gain).
 symptom(loss_of_appetite).
 symptom(night_sweats).
+symptom(frequent_infections).
+symptom(bruising_easily).
+symptom(slow_healing_wounds).
+symptom(sensitivity_to_cold).
+symptom(sensitivity_to_heat).
 symptom(cough).
 symptom(shortness_of_breath).
 symptom(sore_throat).
@@ -147,39 +280,89 @@ symptom(runny_nose).
 symptom(nasal_congestion).
 symptom(sneezing).
 symptom(coughing_blood).
+symptom(rapid_breathing).
+symptom(loss_of_smell).
+symptom(loss_of_taste).
+symptom(hoarseness).
+symptom(throat_swelling).
 symptom(headache).
 symptom(dizziness).
 symptom(blurred_vision).
+symptom(double_vision).
 symptom(sensitivity_to_light).
 symptom(confusion).
 symptom(insomnia).
 symptom(difficulty_concentrating).
+symptom(numbness).
+symptom(tremors).
+symptom(seizure).
+symptom(memory_problems).
+symptom(mood_swings).
+symptom(irritability).
+symptom(loss_of_consciousness).
 symptom(nausea).
 symptom(vomiting).
 symptom(diarrhea).
 symptom(abdominal_pain).
 symptom(bloating).
+symptom(heartburn).
+symptom(constipation).
+symptom(blood_in_stool).
+symptom(excessive_hunger).
+symptom(dark_urine).
+symptom(pale_stool).
+symptom(abdominal_distension).
 symptom(body_ache).
 symptom(joint_pain).
 symptom(muscle_pain).
 symptom(back_pain).
 symptom(stiff_joints).
+symptom(joint_swelling).
+symptom(muscle_cramps).
+symptom(neck_pain).
+symptom(shoulder_pain).
+symptom(knee_pain).
 symptom(rash).
 symptom(pale_skin).
 symptom(yellowing_of_skin).
+symptom(itchy_skin).
+symptom(dry_skin).
+symptom(peeling_skin).
+symptom(skin_discoloration).
+symptom(hair_loss).
+symptom(skin_lesions).
+symptom(boils).
 symptom(chest_pain).
 symptom(rapid_heartbeat).
 symptom(cold_hands_and_feet).
+symptom(swollen_ankles).
+symptom(slow_heartbeat).
+symptom(leg_pain_walking).
 symptom(frequent_urination).
 symptom(burning_urination).
 symptom(blood_in_urine).
+symptom(difficulty_urinating).
+symptom(urinary_urgency).
 symptom(sadness).
 symptom(loss_of_interest).
+symptom(anxiety).
+symptom(panic_attacks).
 symptom(itchy_eyes).
 symptom(red_eyes).
 symptom(swollen_glands).
 symptom(facial_pain).
+symptom(ear_pain).
+symptom(ear_discharge).
+symptom(nosebleed).
+symptom(eye_pain).
+symptom(eye_discharge).
+symptom(tinnitus).
+symptom(hearing_loss).
+symptom(tooth_pain).
+symptom(mouth_ulcers).
+symptom(gum_bleeding).
 symptom(increased_thirst).
+symptom(excessive_hunger).
 
 % Disease-symptom links
 has_symptom(flu, fever).
@@ -204,6 +387,8 @@ has_symptom(covid19, body_ache).
 has_symptom(covid19, headache).
 has_symptom(covid19, loss_of_appetite).
 has_symptom(covid19, sore_throat).
+has_symptom(covid19, loss_of_smell).
+has_symptom(covid19, loss_of_taste).
 has_symptom(malaria, fever).
 has_symptom(malaria, chills).
 has_symptom(malaria, sweating).
@@ -251,17 +436,24 @@ has_symptom(diabetes, increased_thirst).
 has_symptom(diabetes, fatigue).
 has_symptom(diabetes, blurred_vision).
 has_symptom(diabetes, weight_loss).
+has_symptom(diabetes, slow_healing_wounds).
+has_symptom(diabetes, excessive_hunger).
+has_symptom(diabetes, mouth_ulcers).
+has_symptom(diabetes, gum_bleeding).
+has_symptom(diabetes, frequent_infections).
 has_symptom(hypertension, headache).
 has_symptom(hypertension, dizziness).
 has_symptom(hypertension, chest_pain).
 has_symptom(hypertension, shortness_of_breath).
 has_symptom(hypertension, blurred_vision).
+has_symptom(hypertension, leg_pain_walking).
 has_symptom(anemia, fatigue).
 has_symptom(anemia, pale_skin).
 has_symptom(anemia, dizziness).
 has_symptom(anemia, shortness_of_breath).
 has_symptom(anemia, cold_hands_and_feet).
 has_symptom(anemia, headache).
+has_symptom(anemia, rapid_heartbeat).
 has_symptom(allergy, sneezing).
 has_symptom(allergy, itchy_eyes).
 has_symptom(allergy, runny_nose).
@@ -273,6 +465,8 @@ has_symptom(chickenpox, rash).
 has_symptom(chickenpox, fatigue).
 has_symptom(chickenpox, headache).
 has_symptom(chickenpox, loss_of_appetite).
+has_symptom(chickenpox, boils).
+has_symptom(chickenpox, peeling_skin).
 has_symptom(measles, fever).
 has_symptom(measles, rash).
 has_symptom(measles, cough).
@@ -286,6 +480,8 @@ has_symptom(hepatitis_a, vomiting).
 has_symptom(hepatitis_a, abdominal_pain).
 has_symptom(hepatitis_a, yellowing_of_skin).
 has_symptom(hepatitis_a, loss_of_appetite).
+has_symptom(hepatitis_a, dark_urine).
+has_symptom(hepatitis_a, pale_stool).
 has_symptom(tuberculosis, cough).
 has_symptom(tuberculosis, fever).
 has_symptom(tuberculosis, night_sweats).
@@ -305,11 +501,14 @@ has_symptom(sinusitis, headache).
 has_symptom(sinusitis, runny_nose).
 has_symptom(sinusitis, fatigue).
 has_symptom(sinusitis, fever).
+has_symptom(sinusitis, tooth_pain).
 has_symptom(urinary_tract_infection, burning_urination).
 has_symptom(urinary_tract_infection, frequent_urination).
 has_symptom(urinary_tract_infection, abdominal_pain).
 has_symptom(urinary_tract_infection, blood_in_urine).
 has_symptom(urinary_tract_infection, fever).
+has_symptom(urinary_tract_infection, difficulty_urinating).
+has_symptom(urinary_tract_infection, urinary_urgency).
 has_symptom(gastroenteritis, diarrhea).
 has_symptom(gastroenteritis, vomiting).
 has_symptom(gastroenteritis, nausea).
@@ -333,11 +532,220 @@ has_symptom(depression, fatigue).
 has_symptom(depression, insomnia).
 has_symptom(depression, difficulty_concentrating).
 has_symptom(depression, loss_of_appetite).
+has_symptom(depression, panic_attacks).
 has_symptom(arthritis, joint_pain).
 has_symptom(arthritis, stiff_joints).
 has_symptom(arthritis, fatigue).
 has_symptom(arthritis, back_pain).
 has_symptom(arthritis, muscle_pain).
+has_symptom(arthritis, knee_pain).
+has_symptom(arthritis, shoulder_pain).
+has_symptom(gerd, heartburn).
+has_symptom(gerd, chest_pain).
+has_symptom(gerd, nausea).
+has_symptom(gerd, bloating).
+has_symptom(gerd, sore_throat).
+has_symptom(gerd, cough).
+has_symptom(gerd, abdominal_distension).
+has_symptom(tension_headache, headache).
+has_symptom(tension_headache, neck_pain).
+has_symptom(tension_headache, irritability).
+has_symptom(tension_headache, difficulty_concentrating).
+has_symptom(mononucleosis, fever).
+has_symptom(mononucleosis, sore_throat).
+has_symptom(mononucleosis, fatigue).
+has_symptom(mononucleosis, swollen_glands).
+has_symptom(mononucleosis, headache).
+has_symptom(mononucleosis, rash).
+has_symptom(mononucleosis, loss_of_appetite).
+has_symptom(conjunctivitis, red_eyes).
+has_symptom(conjunctivitis, itchy_eyes).
+has_symptom(conjunctivitis, eye_discharge).
+has_symptom(conjunctivitis, eye_pain).
+has_symptom(conjunctivitis, swollen_glands).
+has_symptom(otitis_media, ear_pain).
+has_symptom(otitis_media, fever).
+has_symptom(otitis_media, hearing_loss).
+has_symptom(otitis_media, ear_discharge).
+has_symptom(otitis_media, irritability).
+has_symptom(otitis_media, difficulty_concentrating).
+has_symptom(laryngitis, hoarseness).
+has_symptom(laryngitis, sore_throat).
+has_symptom(laryngitis, cough).
+has_symptom(laryngitis, fever).
+has_symptom(laryngitis, difficulty_concentrating).
+has_symptom(laryngitis, throat_swelling).
+has_symptom(appendicitis, abdominal_pain).
+has_symptom(appendicitis, nausea).
+has_symptom(appendicitis, vomiting).
+has_symptom(appendicitis, fever).
+has_symptom(appendicitis, loss_of_appetite).
+has_symptom(appendicitis, bloating).
+has_symptom(kidney_stones, abdominal_pain).
+has_symptom(kidney_stones, blood_in_urine).
+has_symptom(kidney_stones, nausea).
+has_symptom(kidney_stones, vomiting).
+has_symptom(kidney_stones, burning_urination).
+has_symptom(kidney_stones, frequent_urination).
+has_symptom(stroke, confusion).
+has_symptom(stroke, numbness).
+has_symptom(stroke, blurred_vision).
+has_symptom(stroke, difficulty_concentrating).
+has_symptom(stroke, loss_of_consciousness).
+has_symptom(stroke, dizziness).
+has_symptom(stroke, double_vision).
+has_symptom(stroke, memory_problems).
+has_symptom(heart_attack, chest_pain).
+has_symptom(heart_attack, shortness_of_breath).
+has_symptom(heart_attack, rapid_heartbeat).
+has_symptom(heart_attack, sweating).
+has_symptom(heart_attack, nausea).
+has_symptom(heart_attack, dizziness).
+has_symptom(heart_attack, swollen_ankles).
+has_symptom(copd, shortness_of_breath).
+has_symptom(copd, cough).
+has_symptom(copd, wheezing).
+has_symptom(copd, fatigue).
+has_symptom(copd, chest_pain).
+has_symptom(copd, rapid_breathing).
+has_symptom(copd, slow_heartbeat).
+has_symptom(hypothyroidism, fatigue).
+has_symptom(hypothyroidism, weight_gain).
+has_symptom(hypothyroidism, sensitivity_to_cold).
+has_symptom(hypothyroidism, dry_skin).
+has_symptom(hypothyroidism, constipation).
+has_symptom(hypothyroidism, sadness).
+has_symptom(hypothyroidism, hair_loss).
+has_symptom(hypothyroidism, muscle_pain).
+has_symptom(hypothyroidism, muscle_cramps).
+has_symptom(hypothyroidism, skin_discoloration).
+has_symptom(hyperthyroidism, weight_loss).
+has_symptom(hyperthyroidism, rapid_heartbeat).
+has_symptom(hyperthyroidism, anxiety).
+has_symptom(hyperthyroidism, tremors).
+has_symptom(hyperthyroidism, sensitivity_to_heat).
+has_symptom(hyperthyroidism, sweating).
+has_symptom(hyperthyroidism, difficulty_concentrating).
+has_symptom(hyperthyroidism, insomnia).
+has_symptom(gout, joint_pain).
+has_symptom(gout, joint_swelling).
+has_symptom(gout, red_eyes).
+has_symptom(gout, fever).
+has_symptom(gout, fatigue).
+has_symptom(fibromyalgia, muscle_pain).
+has_symptom(fibromyalgia, joint_pain).
+has_symptom(fibromyalgia, fatigue).
+has_symptom(fibromyalgia, insomnia).
+has_symptom(fibromyalgia, difficulty_concentrating).
+has_symptom(fibromyalgia, headache).
+has_symptom(fibromyalgia, sadness).
+has_symptom(fibromyalgia, anxiety).
+has_symptom(fibromyalgia, tinnitus).
+has_symptom(fibromyalgia, muscle_cramps).
+has_symptom(ibs, abdominal_pain).
+has_symptom(ibs, bloating).
+has_symptom(ibs, diarrhea).
+has_symptom(ibs, constipation).
+has_symptom(ibs, nausea).
+has_symptom(ibs, fatigue).
+has_symptom(ibs, abdominal_distension).
+has_symptom(diverticulitis, abdominal_pain).
+has_symptom(diverticulitis, fever).
+has_symptom(diverticulitis, nausea).
+has_symptom(diverticulitis, vomiting).
+has_symptom(diverticulitis, bloating).
+has_symptom(diverticulitis, constipation).
+has_symptom(pancreatitis, abdominal_pain).
+has_symptom(pancreatitis, nausea).
+has_symptom(pancreatitis, vomiting).
+has_symptom(pancreatitis, fever).
+has_symptom(pancreatitis, rapid_heartbeat).
+has_symptom(pancreatitis, bloating).
+has_symptom(cholecystitis, abdominal_pain).
+has_symptom(cholecystitis, nausea).
+has_symptom(cholecystitis, vomiting).
+has_symptom(cholecystitis, fever).
+has_symptom(cholecystitis, bloating).
+has_symptom(cholecystitis, loss_of_appetite).
+has_symptom(cholecystitis, yellowing_of_skin).
+has_symptom(cholecystitis, dark_urine).
+has_symptom(lupus, fatigue).
+has_symptom(lupus, joint_pain).
+has_symptom(lupus, rash).
+has_symptom(lupus, fever).
+has_symptom(lupus, hair_loss).
+has_symptom(lupus, sensitivity_to_cold).
+has_symptom(lupus, difficulty_concentrating).
+has_symptom(lupus, muscle_pain).
+has_symptom(lupus, bruising_easily).
+has_symptom(lupus, frequent_infections).
+has_symptom(lupus, skin_lesions).
+has_symptom(rheumatoid_arthritis, joint_pain).
+has_symptom(rheumatoid_arthritis, joint_swelling).
+has_symptom(rheumatoid_arthritis, stiff_joints).
+has_symptom(rheumatoid_arthritis, fatigue).
+has_symptom(rheumatoid_arthritis, fever).
+has_symptom(rheumatoid_arthritis, muscle_pain).
+has_symptom(multiple_sclerosis, numbness).
+has_symptom(multiple_sclerosis, blurred_vision).
+has_symptom(multiple_sclerosis, fatigue).
+has_symptom(multiple_sclerosis, difficulty_concentrating).
+has_symptom(multiple_sclerosis, muscle_pain).
+has_symptom(multiple_sclerosis, dizziness).
+has_symptom(multiple_sclerosis, mood_swings).
+has_symptom(parkinsons, tremors).
+has_symptom(parkinsons, stiff_joints).
+has_symptom(parkinsons, difficulty_concentrating).
+has_symptom(parkinsons, dizziness).
+has_symptom(parkinsons, sadness).
+has_symptom(parkinsons, fatigue).
+has_symptom(parkinsons, memory_problems).
+has_symptom(epilepsy, seizure).
+has_symptom(epilepsy, confusion).
+has_symptom(epilepsy, fatigue).
+has_symptom(epilepsy, loss_of_consciousness).
+has_symptom(epilepsy, difficulty_concentrating).
+has_symptom(epilepsy, memory_problems).
+has_symptom(chronic_fatigue_syndrome, fatigue).
+has_symptom(chronic_fatigue_syndrome, headache).
+has_symptom(chronic_fatigue_syndrome, joint_pain).
+has_symptom(chronic_fatigue_syndrome, difficulty_concentrating).
+has_symptom(chronic_fatigue_syndrome, insomnia).
+has_symptom(chronic_fatigue_syndrome, muscle_pain).
+has_symptom(chronic_fatigue_syndrome, sore_throat).
+has_symptom(chronic_fatigue_syndrome, swollen_glands).
+has_symptom(chronic_fatigue_syndrome, nosebleed).
+has_symptom(food_poisoning, nausea).
+has_symptom(food_poisoning, vomiting).
+has_symptom(food_poisoning, diarrhea).
+has_symptom(food_poisoning, abdominal_pain).
+has_symptom(food_poisoning, fever).
+has_symptom(food_poisoning, chills).
+has_symptom(food_poisoning, fatigue).
+has_symptom(whooping_cough, cough).
+has_symptom(whooping_cough, sore_throat).
+has_symptom(whooping_cough, runny_nose).
+has_symptom(whooping_cough, fever).
+has_symptom(whooping_cough, fatigue).
+has_symptom(whooping_cough, vomiting).
+has_symptom(scarlet_fever, fever).
+has_symptom(scarlet_fever, rash).
+has_symptom(scarlet_fever, sore_throat).
+has_symptom(scarlet_fever, headache).
+has_symptom(scarlet_fever, nausea).
+has_symptom(scarlet_fever, swollen_glands).
+has_symptom(celiac_disease, diarrhea).
+has_symptom(celiac_disease, bloating).
+has_symptom(celiac_disease, abdominal_pain).
+has_symptom(celiac_disease, fatigue).
+has_symptom(celiac_disease, weight_loss).
+has_symptom(celiac_disease, pale_skin).
+has_symptom(celiac_disease, joint_pain).
+has_symptom(celiac_disease, rash).
+has_symptom(hemorrhoids, blood_in_stool).
+has_symptom(hemorrhoids, abdominal_pain).
+has_symptom(hemorrhoids, itchy_skin).
+has_symptom(hemorrhoids, pale_stool).
 
 % Severity weights (one per disease-symptom pair; symptoms without an
 % explicit weight in the catalog default to 1.0)
@@ -363,6 +771,8 @@ severity_weight(covid19, body_ache, 1.0).
 severity_weight(covid19, headache, 1.0).
 severity_weight(covid19, loss_of_appetite, 1.1).
 severity_weight(covid19, sore_throat, 1.0).
+severity_weight(covid19, loss_of_smell, 1.3).
+severity_weight(covid19, loss_of_taste, 1.3).
 severity_weight(malaria, fever, 1.0).
 severity_weight(malaria, chills, 1.3).
 severity_weight(malaria, sweating, 1.0).
@@ -410,17 +820,24 @@ severity_weight(diabetes, increased_thirst, 1.3).
 severity_weight(diabetes, fatigue, 1.0).
 severity_weight(diabetes, blurred_vision, 1.0).
 severity_weight(diabetes, weight_loss, 1.0).
+severity_weight(diabetes, slow_healing_wounds, 1.0).
+severity_weight(diabetes, excessive_hunger, 1.0).
+severity_weight(diabetes, mouth_ulcers, 1.0).
+severity_weight(diabetes, gum_bleeding, 1.0).
+severity_weight(diabetes, frequent_infections, 1.0).
 severity_weight(hypertension, headache, 1.0).
 severity_weight(hypertension, dizziness, 1.0).
 severity_weight(hypertension, chest_pain, 1.0).
 severity_weight(hypertension, shortness_of_breath, 1.0).
 severity_weight(hypertension, blurred_vision, 1.0).
+severity_weight(hypertension, leg_pain_walking, 1.0).
 severity_weight(anemia, fatigue, 1.0).
 severity_weight(anemia, pale_skin, 1.0).
 severity_weight(anemia, dizziness, 1.0).
 severity_weight(anemia, shortness_of_breath, 1.0).
 severity_weight(anemia, cold_hands_and_feet, 1.0).
 severity_weight(anemia, headache, 1.0).
+severity_weight(anemia, rapid_heartbeat, 1.0).
 severity_weight(allergy, sneezing, 1.0).
 severity_weight(allergy, itchy_eyes, 1.0).
 severity_weight(allergy, runny_nose, 1.0).
@@ -432,6 +849,8 @@ severity_weight(chickenpox, rash, 1.0).
 severity_weight(chickenpox, fatigue, 1.0).
 severity_weight(chickenpox, headache, 1.0).
 severity_weight(chickenpox, loss_of_appetite, 1.0).
+severity_weight(chickenpox, boils, 1.0).
+severity_weight(chickenpox, peeling_skin, 1.0).
 severity_weight(measles, fever, 1.0).
 severity_weight(measles, rash, 1.0).
 severity_weight(measles, cough, 1.0).
@@ -445,6 +864,8 @@ severity_weight(hepatitis_a, vomiting, 1.0).
 severity_weight(hepatitis_a, abdominal_pain, 1.0).
 severity_weight(hepatitis_a, yellowing_of_skin, 1.5).
 severity_weight(hepatitis_a, loss_of_appetite, 1.0).
+severity_weight(hepatitis_a, dark_urine, 1.0).
+severity_weight(hepatitis_a, pale_stool, 1.0).
 severity_weight(tuberculosis, cough, 1.0).
 severity_weight(tuberculosis, fever, 1.0).
 severity_weight(tuberculosis, night_sweats, 1.3).
@@ -464,11 +885,14 @@ severity_weight(sinusitis, headache, 1.0).
 severity_weight(sinusitis, runny_nose, 1.0).
 severity_weight(sinusitis, fatigue, 1.0).
 severity_weight(sinusitis, fever, 1.0).
+severity_weight(sinusitis, tooth_pain, 1.0).
 severity_weight(urinary_tract_infection, burning_urination, 1.4).
 severity_weight(urinary_tract_infection, frequent_urination, 1.0).
 severity_weight(urinary_tract_infection, abdominal_pain, 1.0).
 severity_weight(urinary_tract_infection, blood_in_urine, 1.3).
 severity_weight(urinary_tract_infection, fever, 1.0).
+severity_weight(urinary_tract_infection, difficulty_urinating, 1.0).
+severity_weight(urinary_tract_infection, urinary_urgency, 1.0).
 severity_weight(gastroenteritis, diarrhea, 1.0).
 severity_weight(gastroenteritis, vomiting, 1.0).
 severity_weight(gastroenteritis, nausea, 1.0).
@@ -492,11 +916,220 @@ severity_weight(depression, fatigue, 1.0).
 severity_weight(depression, insomnia, 1.0).
 severity_weight(depression, difficulty_concentrating, 1.0).
 severity_weight(depression, loss_of_appetite, 1.0).
+severity_weight(depression, panic_attacks, 1.0).
 severity_weight(arthritis, joint_pain, 1.0).
 severity_weight(arthritis, stiff_joints, 1.0).
 severity_weight(arthritis, fatigue, 1.0).
 severity_weight(arthritis, back_pain, 1.0).
 severity_weight(arthritis, muscle_pain, 1.0).
+severity_weight(arthritis, knee_pain, 1.0).
+severity_weight(arthritis, shoulder_pain, 1.0).
+severity_weight(gerd, heartburn, 1.5).
+severity_weight(gerd, chest_pain, 1.2).
+severity_weight(gerd, nausea, 1.0).
+severity_weight(gerd, bloating, 1.0).
+severity_weight(gerd, sore_throat, 1.0).
+severity_weight(gerd, cough, 1.0).
+severity_weight(gerd, abdominal_distension, 1.0).
+severity_weight(tension_headache, headache, 1.5).
+severity_weight(tension_headache, neck_pain, 1.2).
+severity_weight(tension_headache, irritability, 1.0).
+severity_weight(tension_headache, difficulty_concentrating, 1.0).
+severity_weight(mononucleosis, fever, 1.0).
+severity_weight(mononucleosis, sore_throat, 1.3).
+severity_weight(mononucleosis, fatigue, 1.0).
+severity_weight(mononucleosis, swollen_glands, 1.3).
+severity_weight(mononucleosis, headache, 1.0).
+severity_weight(mononucleosis, rash, 1.0).
+severity_weight(mononucleosis, loss_of_appetite, 1.0).
+severity_weight(conjunctivitis, red_eyes, 1.4).
+severity_weight(conjunctivitis, itchy_eyes, 1.3).
+severity_weight(conjunctivitis, eye_discharge, 1.3).
+severity_weight(conjunctivitis, eye_pain, 1.0).
+severity_weight(conjunctivitis, swollen_glands, 1.0).
+severity_weight(otitis_media, ear_pain, 1.5).
+severity_weight(otitis_media, fever, 1.2).
+severity_weight(otitis_media, hearing_loss, 1.0).
+severity_weight(otitis_media, ear_discharge, 1.0).
+severity_weight(otitis_media, irritability, 1.0).
+severity_weight(otitis_media, difficulty_concentrating, 1.0).
+severity_weight(laryngitis, hoarseness, 1.5).
+severity_weight(laryngitis, sore_throat, 1.2).
+severity_weight(laryngitis, cough, 1.0).
+severity_weight(laryngitis, fever, 1.0).
+severity_weight(laryngitis, difficulty_concentrating, 1.0).
+severity_weight(laryngitis, throat_swelling, 1.0).
+severity_weight(appendicitis, abdominal_pain, 1.5).
+severity_weight(appendicitis, nausea, 1.0).
+severity_weight(appendicitis, vomiting, 1.0).
+severity_weight(appendicitis, fever, 1.0).
+severity_weight(appendicitis, loss_of_appetite, 1.0).
+severity_weight(appendicitis, bloating, 1.0).
+severity_weight(kidney_stones, abdominal_pain, 1.4).
+severity_weight(kidney_stones, blood_in_urine, 1.3).
+severity_weight(kidney_stones, nausea, 1.0).
+severity_weight(kidney_stones, vomiting, 1.0).
+severity_weight(kidney_stones, burning_urination, 1.0).
+severity_weight(kidney_stones, frequent_urination, 1.0).
+severity_weight(stroke, confusion, 1.4).
+severity_weight(stroke, numbness, 1.3).
+severity_weight(stroke, blurred_vision, 1.2).
+severity_weight(stroke, difficulty_concentrating, 1.0).
+severity_weight(stroke, loss_of_consciousness, 1.0).
+severity_weight(stroke, dizziness, 1.0).
+severity_weight(stroke, double_vision, 1.0).
+severity_weight(stroke, memory_problems, 1.0).
+severity_weight(heart_attack, chest_pain, 1.5).
+severity_weight(heart_attack, shortness_of_breath, 1.4).
+severity_weight(heart_attack, rapid_heartbeat, 1.3).
+severity_weight(heart_attack, sweating, 1.0).
+severity_weight(heart_attack, nausea, 1.0).
+severity_weight(heart_attack, dizziness, 1.0).
+severity_weight(heart_attack, swollen_ankles, 1.0).
+severity_weight(copd, shortness_of_breath, 1.4).
+severity_weight(copd, cough, 1.0).
+severity_weight(copd, wheezing, 1.3).
+severity_weight(copd, fatigue, 1.0).
+severity_weight(copd, chest_pain, 1.0).
+severity_weight(copd, rapid_breathing, 1.0).
+severity_weight(copd, slow_heartbeat, 1.0).
+severity_weight(hypothyroidism, fatigue, 1.0).
+severity_weight(hypothyroidism, weight_gain, 1.2).
+severity_weight(hypothyroidism, sensitivity_to_cold, 1.3).
+severity_weight(hypothyroidism, dry_skin, 1.1).
+severity_weight(hypothyroidism, constipation, 1.0).
+severity_weight(hypothyroidism, sadness, 1.0).
+severity_weight(hypothyroidism, hair_loss, 1.0).
+severity_weight(hypothyroidism, muscle_pain, 1.0).
+severity_weight(hypothyroidism, muscle_cramps, 1.0).
+severity_weight(hypothyroidism, skin_discoloration, 1.0).
+severity_weight(hyperthyroidism, weight_loss, 1.2).
+severity_weight(hyperthyroidism, rapid_heartbeat, 1.3).
+severity_weight(hyperthyroidism, anxiety, 1.0).
+severity_weight(hyperthyroidism, tremors, 1.2).
+severity_weight(hyperthyroidism, sensitivity_to_heat, 1.0).
+severity_weight(hyperthyroidism, sweating, 1.0).
+severity_weight(hyperthyroidism, difficulty_concentrating, 1.0).
+severity_weight(hyperthyroidism, insomnia, 1.0).
+severity_weight(gout, joint_pain, 1.5).
+severity_weight(gout, joint_swelling, 1.4).
+severity_weight(gout, red_eyes, 1.0).
+severity_weight(gout, fever, 1.0).
+severity_weight(gout, fatigue, 1.0).
+severity_weight(fibromyalgia, muscle_pain, 1.3).
+severity_weight(fibromyalgia, joint_pain, 1.0).
+severity_weight(fibromyalgia, fatigue, 1.2).
+severity_weight(fibromyalgia, insomnia, 1.0).
+severity_weight(fibromyalgia, difficulty_concentrating, 1.1).
+severity_weight(fibromyalgia, headache, 1.0).
+severity_weight(fibromyalgia, sadness, 1.0).
+severity_weight(fibromyalgia, anxiety, 1.0).
+severity_weight(fibromyalgia, tinnitus, 1.0).
+severity_weight(fibromyalgia, muscle_cramps, 1.0).
+severity_weight(ibs, abdominal_pain, 1.3).
+severity_weight(ibs, bloating, 1.2).
+severity_weight(ibs, diarrhea, 1.0).
+severity_weight(ibs, constipation, 1.0).
+severity_weight(ibs, nausea, 1.0).
+severity_weight(ibs, fatigue, 1.0).
+severity_weight(ibs, abdominal_distension, 1.0).
+severity_weight(diverticulitis, abdominal_pain, 1.4).
+severity_weight(diverticulitis, fever, 1.0).
+severity_weight(diverticulitis, nausea, 1.0).
+severity_weight(diverticulitis, vomiting, 1.0).
+severity_weight(diverticulitis, bloating, 1.0).
+severity_weight(diverticulitis, constipation, 1.0).
+severity_weight(pancreatitis, abdominal_pain, 1.5).
+severity_weight(pancreatitis, nausea, 1.0).
+severity_weight(pancreatitis, vomiting, 1.0).
+severity_weight(pancreatitis, fever, 1.0).
+severity_weight(pancreatitis, rapid_heartbeat, 1.0).
+severity_weight(pancreatitis, bloating, 1.0).
+severity_weight(cholecystitis, abdominal_pain, 1.4).
+severity_weight(cholecystitis, nausea, 1.0).
+severity_weight(cholecystitis, vomiting, 1.0).
+severity_weight(cholecystitis, fever, 1.0).
+severity_weight(cholecystitis, bloating, 1.0).
+severity_weight(cholecystitis, loss_of_appetite, 1.0).
+severity_weight(cholecystitis, yellowing_of_skin, 1.0).
+severity_weight(cholecystitis, dark_urine, 1.0).
+severity_weight(lupus, fatigue, 1.0).
+severity_weight(lupus, joint_pain, 1.2).
+severity_weight(lupus, rash, 1.3).
+severity_weight(lupus, fever, 1.0).
+severity_weight(lupus, hair_loss, 1.1).
+severity_weight(lupus, sensitivity_to_cold, 1.0).
+severity_weight(lupus, difficulty_concentrating, 1.0).
+severity_weight(lupus, muscle_pain, 1.0).
+severity_weight(lupus, bruising_easily, 1.0).
+severity_weight(lupus, frequent_infections, 1.0).
+severity_weight(lupus, skin_lesions, 1.0).
+severity_weight(rheumatoid_arthritis, joint_pain, 1.4).
+severity_weight(rheumatoid_arthritis, joint_swelling, 1.3).
+severity_weight(rheumatoid_arthritis, stiff_joints, 1.2).
+severity_weight(rheumatoid_arthritis, fatigue, 1.0).
+severity_weight(rheumatoid_arthritis, fever, 1.0).
+severity_weight(rheumatoid_arthritis, muscle_pain, 1.0).
+severity_weight(multiple_sclerosis, numbness, 1.3).
+severity_weight(multiple_sclerosis, blurred_vision, 1.2).
+severity_weight(multiple_sclerosis, fatigue, 1.0).
+severity_weight(multiple_sclerosis, difficulty_concentrating, 1.1).
+severity_weight(multiple_sclerosis, muscle_pain, 1.0).
+severity_weight(multiple_sclerosis, dizziness, 1.0).
+severity_weight(multiple_sclerosis, mood_swings, 1.0).
+severity_weight(parkinsons, tremors, 1.5).
+severity_weight(parkinsons, stiff_joints, 1.3).
+severity_weight(parkinsons, difficulty_concentrating, 1.0).
+severity_weight(parkinsons, dizziness, 1.0).
+severity_weight(parkinsons, sadness, 1.0).
+severity_weight(parkinsons, fatigue, 1.0).
+severity_weight(parkinsons, memory_problems, 1.0).
+severity_weight(epilepsy, seizure, 1.5).
+severity_weight(epilepsy, confusion, 1.0).
+severity_weight(epilepsy, fatigue, 1.0).
+severity_weight(epilepsy, loss_of_consciousness, 1.0).
+severity_weight(epilepsy, difficulty_concentrating, 1.0).
+severity_weight(epilepsy, memory_problems, 1.0).
+severity_weight(chronic_fatigue_syndrome, fatigue, 1.5).
+severity_weight(chronic_fatigue_syndrome, headache, 1.0).
+severity_weight(chronic_fatigue_syndrome, joint_pain, 1.0).
+severity_weight(chronic_fatigue_syndrome, difficulty_concentrating, 1.2).
+severity_weight(chronic_fatigue_syndrome, insomnia, 1.0).
+severity_weight(chronic_fatigue_syndrome, muscle_pain, 1.0).
+severity_weight(chronic_fatigue_syndrome, sore_throat, 1.0).
+severity_weight(chronic_fatigue_syndrome, swollen_glands, 1.0).
+severity_weight(chronic_fatigue_syndrome, nosebleed, 1.0).
+severity_weight(food_poisoning, nausea, 1.0).
+severity_weight(food_poisoning, vomiting, 1.3).
+severity_weight(food_poisoning, diarrhea, 1.3).
+severity_weight(food_poisoning, abdominal_pain, 1.0).
+severity_weight(food_poisoning, fever, 1.0).
+severity_weight(food_poisoning, chills, 1.0).
+severity_weight(food_poisoning, fatigue, 1.0).
+severity_weight(whooping_cough, cough, 1.5).
+severity_weight(whooping_cough, sore_throat, 1.0).
+severity_weight(whooping_cough, runny_nose, 1.0).
+severity_weight(whooping_cough, fever, 1.0).
+severity_weight(whooping_cough, fatigue, 1.0).
+severity_weight(whooping_cough, vomiting, 1.0).
+severity_weight(scarlet_fever, fever, 1.0).
+severity_weight(scarlet_fever, rash, 1.4).
+severity_weight(scarlet_fever, sore_throat, 1.3).
+severity_weight(scarlet_fever, headache, 1.0).
+severity_weight(scarlet_fever, nausea, 1.0).
+severity_weight(scarlet_fever, swollen_glands, 1.0).
+severity_weight(celiac_disease, diarrhea, 1.2).
+severity_weight(celiac_disease, bloating, 1.2).
+severity_weight(celiac_disease, abdominal_pain, 1.1).
+severity_weight(celiac_disease, fatigue, 1.0).
+severity_weight(celiac_disease, weight_loss, 1.0).
+severity_weight(celiac_disease, pale_skin, 1.0).
+severity_weight(celiac_disease, joint_pain, 1.0).
+severity_weight(celiac_disease, rash, 1.0).
+severity_weight(hemorrhoids, blood_in_stool, 1.3).
+severity_weight(hemorrhoids, abdominal_pain, 1.0).
+severity_weight(hemorrhoids, itchy_skin, 1.0).
+severity_weight(hemorrhoids, pale_stool, 1.0).
 
 % Age-based risk factors
 risk_factor(flu, age, child).
@@ -509,6 +1142,51 @@ risk_factor(diabetes, age, elderly).
 risk_factor(hypertension, age, middle_aged).
 risk_factor(hypertension, age, elderly).
 risk_factor(arthritis, age, elderly).
+risk_factor(gerd, age, middle_aged).
+risk_factor(gerd, age, elderly).
+risk_factor(mononucleosis, age, adolescent).
+risk_factor(mononucleosis, age, adult).
+risk_factor(otitis_media, age, child).
+risk_factor(appendicitis, age, adolescent).
+risk_factor(appendicitis, age, adult).
+risk_factor(kidney_stones, age, adult).
+risk_factor(kidney_stones, age, middle_aged).
+risk_factor(stroke, age, middle_aged).
+risk_factor(stroke, age, elderly).
+risk_factor(heart_attack, age, middle_aged).
+risk_factor(heart_attack, age, elderly).
+risk_factor(copd, age, middle_aged).
+risk_factor(copd, age, elderly).
+risk_factor(hypothyroidism, age, middle_aged).
+risk_factor(hypothyroidism, age, elderly).
+risk_factor(hyperthyroidism, age, adult).
+risk_factor(hyperthyroidism, age, middle_aged).
+risk_factor(gout, age, middle_aged).
+risk_factor(gout, age, elderly).
+risk_factor(fibromyalgia, age, adult).
+risk_factor(fibromyalgia, age, middle_aged).
+risk_factor(diverticulitis, age, middle_aged).
+risk_factor(diverticulitis, age, elderly).
+risk_factor(pancreatitis, age, adult).
+risk_factor(pancreatitis, age, middle_aged).
+risk_factor(cholecystitis, age, adult).
+risk_factor(cholecystitis, age, middle_aged).
+risk_factor(lupus, age, adult).
+risk_factor(lupus, age, middle_aged).
+risk_factor(rheumatoid_arthritis, age, middle_aged).
+risk_factor(rheumatoid_arthritis, age, elderly).
+risk_factor(multiple_sclerosis, age, adult).
+risk_factor(multiple_sclerosis, age, middle_aged).
+risk_factor(parkinsons, age, middle_aged).
+risk_factor(parkinsons, age, elderly).
+risk_factor(epilepsy, age, child).
+risk_factor(epilepsy, age, adolescent).
+risk_factor(chronic_fatigue_syndrome, age, adult).
+risk_factor(chronic_fatigue_syndrome, age, middle_aged).
+risk_factor(whooping_cough, age, child).
+risk_factor(scarlet_fever, age, child).
+risk_factor(hemorrhoids, age, middle_aged).
+risk_factor(hemorrhoids, age, elderly).
 
 % ------------------- GENERATED FACTS (END) -------------------
 
