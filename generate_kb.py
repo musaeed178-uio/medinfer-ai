@@ -29,6 +29,11 @@ def _num(value):
     return repr(float(value))
 
 
+def _prolog_str(s):
+    """Escape a string for use inside Prolog single quotes."""
+    return s.replace("\\", "\\\\").replace("'", "\\'")
+
+
 def build_facts(catalog):
     """Return the generated facts block (without the marker lines)."""
     meta = catalog.get("_meta", {})
@@ -57,12 +62,12 @@ def build_facts(catalog):
 
     lines.append("% Disease descriptions")
     for d, info in diseases.items():
-        lines.append("description(%s, '%s')." % (d, info["description"]))
+        lines.append("description(%s, '%s')." % (d, _prolog_str(info["description"])))
     lines.append("")
 
     lines.append("% Recommendations")
     for d, info in diseases.items():
-        lines.append("recommendation(%s, '%s')." % (d, info["recommendation"]))
+        lines.append("recommendation(%s, '%s')." % (d, _prolog_str(info["recommendation"])))
     lines.append("")
 
     lines.append("% Emergency flags")
