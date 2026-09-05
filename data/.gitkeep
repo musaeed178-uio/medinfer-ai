@@ -1,0 +1,2 @@
+# The data/ folder stores local patient profiles and diagnosis history.
+# Its contents (data/*) are ignored by .gitignore for privacy reasons.
