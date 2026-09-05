@@ -1,7 +1,7 @@
 {
   "_meta": {
     "name": "MedInfer AI knowledge base",
-    "version": "2.0",
+    "version": "3.0",
     "license": "AGPL-3.0-or-later",
     "note": "Single source of truth for the expert system content. medical_kb.pl facts are generated from this file by generate_kb.py."
   },
@@ -17,16 +17,16 @@
           ],
           "red_flag": false
         },
-    "fatigue": {
-      "aliases": [
-        "tired",
-        "tiredness",
-        "exhaustion",
-        "exhausted",
-        "lethargy",
-        "low energy",
-        "weakness"
-      ],
+        "fatigue": {
+          "aliases": [
+            "tired",
+            "tiredness",
+            "exhaustion",
+            "exhausted",
+            "lethargy",
+            "low energy",
+            "weakness"
+          ],
           "red_flag": false
         },
         "chills": {
@@ -52,6 +52,14 @@
           ],
           "red_flag": false
         },
+        "weight_gain": {
+          "aliases": [
+            "gained weight",
+            "gaining weight",
+            "unexplained weight gain"
+          ],
+          "red_flag": false
+        },
         "loss_of_appetite": {
           "aliases": [
             "no appetite",
@@ -66,6 +74,46 @@
             "night sweats",
             "sweating at night",
             "drenching sweats at night"
+          ],
+          "red_flag": false
+        },
+        "frequent_infections": {
+          "aliases": [
+            "getting sick often",
+            "constant infections",
+            "recurrent infections"
+          ],
+          "red_flag": false
+        },
+        "bruising_easily": {
+          "aliases": [
+            "easy bruising",
+            "bruises easily",
+            "unexplained bruises"
+          ],
+          "red_flag": false
+        },
+        "slow_healing_wounds": {
+          "aliases": [
+            "wounds not healing",
+            "slow healing cuts",
+            "cuts take long to heal"
+          ],
+          "red_flag": false
+        },
+        "sensitivity_to_cold": {
+          "aliases": [
+            "cold intolerance",
+            "always cold",
+            "feeling cold"
+          ],
+          "red_flag": false
+        },
+        "sensitivity_to_heat": {
+          "aliases": [
+            "heat intolerance",
+            "always hot",
+            "feeling hot"
           ],
           "red_flag": false
         }
@@ -100,11 +148,16 @@
           "red_flag": false
         },
         "wheezing": {
-          "aliases": [],
+          "aliases": [
+            "whistling breathing"
+          ],
           "red_flag": false
         },
         "runny_nose": {
-          "aliases": [],
+          "aliases": [
+            "runny nose",
+            "nose running"
+          ],
           "red_flag": false
         },
         "nasal_congestion": {
@@ -130,13 +183,58 @@
             "coughing blood"
           ],
           "red_flag": true
+        },
+        "rapid_breathing": {
+          "aliases": [
+            "breathing fast",
+            "hyperventilating",
+            "tachypnea"
+          ],
+          "red_flag": false
+        },
+        "loss_of_smell": {
+          "aliases": [
+            "can't smell",
+            "anosmia",
+            "no sense of smell",
+            "lost smell"
+          ],
+          "red_flag": false
+        },
+        "loss_of_taste": {
+          "aliases": [
+            "can't taste",
+            "ageusia",
+            "no sense of taste",
+            "lost taste"
+          ],
+          "red_flag": false
+        },
+        "hoarseness": {
+          "aliases": [
+            "hoarse voice",
+            "raspy voice",
+            "voice changes",
+            "lost voice"
+          ],
+          "red_flag": false
+        },
+        "throat_swelling": {
+          "aliases": [
+            "swollen throat",
+            "throat tightness",
+            "lump in throat"
+          ],
+          "red_flag": true
         }
       }
     },
     "Neurological": {
       "symptoms": {
         "headache": {
-          "aliases": [],
+          "aliases": [
+            "head pain"
+          ],
           "red_flag": false
         },
         "dizziness": {
@@ -154,6 +252,14 @@
             "blurry vision",
             "cloudy vision",
             "vision is blurry"
+          ],
+          "red_flag": false
+        },
+        "double_vision": {
+          "aliases": [
+            "seeing double",
+            "diplopia",
+            "double images"
           ],
           "red_flag": false
         },
@@ -192,6 +298,67 @@
             "hard to concentrate"
           ],
           "red_flag": false
+        },
+        "numbness": {
+          "aliases": [
+            "numb",
+            "tingling",
+            "pins and needles",
+            "paresthesia"
+          ],
+          "red_flag": false
+        },
+        "tremors": {
+          "aliases": [
+            "shaking",
+            "tremor",
+            "involuntary shaking",
+            "shaky hands"
+          ],
+          "red_flag": false
+        },
+        "seizure": {
+          "aliases": [
+            "seizures",
+            "convulsions",
+            "fits",
+            "epileptic episode"
+          ],
+          "red_flag": true
+        },
+        "memory_problems": {
+          "aliases": [
+            "forgetfulness",
+            "memory loss",
+            "can't remember",
+            "short-term memory loss"
+          ],
+          "red_flag": false
+        },
+        "mood_swings": {
+          "aliases": [
+            "mood changes",
+            "emotional instability",
+            "volatile mood"
+          ],
+          "red_flag": false
+        },
+        "irritability": {
+          "aliases": [
+            "irritable",
+            "easily irritated",
+            "short-tempered"
+          ],
+          "red_flag": false
+        },
+        "loss_of_consciousness": {
+          "aliases": [
+            "fainting",
+            "passed out",
+            "blackout",
+            "syncope"
+          ],
+          "red_flag": true
         }
       }
     },
@@ -242,6 +409,67 @@
             "trapped wind"
           ],
           "red_flag": false
+        },
+        "heartburn": {
+          "aliases": [
+            "acid reflux",
+            "burning in chest",
+            "gastric reflux",
+            "indigestion"
+          ],
+          "red_flag": false
+        },
+        "constipation": {
+          "aliases": [
+            "constipated",
+            "difficulty passing stool",
+            "hard stools",
+            "infrequent bowel movements"
+          ],
+          "red_flag": false
+        },
+        "blood_in_stool": {
+          "aliases": [
+            "bloody stool",
+            "blood in stool",
+            "rectal bleeding",
+            "dark stools",
+            "melena"
+          ],
+          "red_flag": true
+        },
+        "excessive_hunger": {
+          "aliases": [
+            "always hungry",
+            "increased appetite",
+            "polyphagia",
+            "ravenous hunger"
+          ],
+          "red_flag": false
+        },
+        "dark_urine": {
+          "aliases": [
+            "dark urine",
+            "tea-colored urine",
+            "brown urine"
+          ],
+          "red_flag": false
+        },
+        "pale_stool": {
+          "aliases": [
+            "light colored stool",
+            "white stool",
+            "clay colored stool"
+          ],
+          "red_flag": false
+        },
+        "abdominal_distension": {
+          "aliases": [
+            "swollen abdomen",
+            "distended belly",
+            "enlarged belly"
+          ],
+          "red_flag": false
         }
       }
     },
@@ -287,6 +515,48 @@
             "rigid joints"
           ],
           "red_flag": false
+        },
+        "joint_swelling": {
+          "aliases": [
+            "swollen joints",
+            "joint swelling",
+            "puffy joints"
+          ],
+          "red_flag": false
+        },
+        "muscle_cramps": {
+          "aliases": [
+            "cramps",
+            "muscle spasms",
+            "spasms",
+            "charley horse"
+          ],
+          "red_flag": false
+        },
+        "neck_pain": {
+          "aliases": [
+            "neck ache",
+            "stiff neck",
+            "sore neck",
+            "cervical pain"
+          ],
+          "red_flag": false
+        },
+        "shoulder_pain": {
+          "aliases": [
+            "shoulder ache",
+            "shoulder pain",
+            "aching shoulder"
+          ],
+          "red_flag": false
+        },
+        "knee_pain": {
+          "aliases": [
+            "knee ache",
+            "knee joint pain",
+            "painful knee"
+          ],
+          "red_flag": false
         }
       }
     },
@@ -315,6 +585,68 @@
             "jaundice",
             "yellowing eyes",
             "jaundiced"
+          ],
+          "red_flag": false
+        },
+        "itchy_skin": {
+          "aliases": [
+            "itching",
+            "skin itching",
+            "pruritus",
+            "itchy body"
+          ],
+          "red_flag": false
+        },
+        "dry_skin": {
+          "aliases": [
+            "dry skin",
+            "flaky skin",
+            "scaly skin",
+            "rough skin"
+          ],
+          "red_flag": false
+        },
+        "peeling_skin": {
+          "aliases": [
+            "skin peeling",
+            "flaking skin",
+            "skin shedding"
+          ],
+          "red_flag": false
+        },
+        "skin_discoloration": {
+          "aliases": [
+            "discolored skin",
+            "skin patches",
+            "dark patches on skin",
+            "skin discoloration"
+          ],
+          "red_flag": false
+        },
+        "hair_loss": {
+          "aliases": [
+            "losing hair",
+            "hair falling out",
+            "alopecia",
+            "balding"
+          ],
+          "red_flag": false
+        },
+        "skin_lesions": {
+          "aliases": [
+            "skin sores",
+            "skin ulcers",
+            "open sores",
+            "lesions on skin"
+          ],
+          "red_flag": false
+        },
+        "boils": {
+          "aliases": [
+            "boil",
+            "skin abscess",
+            "pus-filled bump",
+            "carbuncle"
           ],
           "red_flag": false
         }
@@ -346,6 +678,32 @@
             "cold feet"
           ],
           "red_flag": false
+        },
+        "swollen_ankles": {
+          "aliases": [
+            "swollen feet",
+            "ankle swelling",
+            "puffy ankles",
+            "edema",
+            "swollen legs"
+          ],
+          "red_flag": false
+        },
+        "slow_heartbeat": {
+          "aliases": [
+            "slow heart rate",
+            "bradycardia",
+            "heart beating slowly"
+          ],
+          "red_flag": false
+        },
+        "leg_pain_walking": {
+          "aliases": [
+            "leg pain when walking",
+            "claudication",
+            "pain in leg on exertion"
+          ],
+          "red_flag": false
         }
       }
     },
@@ -371,7 +729,25 @@
         "blood_in_urine": {
           "aliases": [
             "bloody urine",
-            "blood in the urine"
+            "blood in the urine",
+            "hematuria"
+          ],
+          "red_flag": false
+        },
+        "difficulty_urinating": {
+          "aliases": [
+            "trouble urinating",
+            "weak urine stream",
+            "hesitancy",
+            "incomplete bladder emptying"
+          ],
+          "red_flag": false
+        },
+        "urinary_urgency": {
+          "aliases": [
+            "urgent need to urinate",
+            "sudden urge to pee",
+            "urgency"
           ],
           "red_flag": false
         }
@@ -394,6 +770,24 @@
             "anhedonia",
             "not enjoying things",
             "lost interest"
+          ],
+          "red_flag": false
+        },
+        "anxiety": {
+          "aliases": [
+            "anxious",
+            "feeling anxious",
+            "nervous",
+            "worrying excessively",
+            "panic"
+          ],
+          "red_flag": false
+        },
+        "panic_attacks": {
+          "aliases": [
+            "panic attack",
+            "sudden intense fear",
+            "heart racing with fear"
           ],
           "red_flag": false
         }
@@ -430,16 +824,110 @@
             "face ache"
           ],
           "red_flag": false
+        },
+        "ear_pain": {
+          "aliases": [
+            "earache",
+            "ear infection pain",
+            "pain in ear",
+            "ear ache"
+          ],
+          "red_flag": false
+        },
+        "ear_discharge": {
+          "aliases": [
+            "fluid from ear",
+            "ear drainage",
+            "pus from ear"
+          ],
+          "red_flag": false
+        },
+        "nosebleed": {
+          "aliases": [
+            "nose bleed",
+            "bleeding nose",
+            "epistaxis"
+          ],
+          "red_flag": false
+        },
+        "eye_pain": {
+          "aliases": [
+            "eye ache",
+            "pain in eye",
+            "aching eye"
+          ],
+          "red_flag": false
+        },
+        "eye_discharge": {
+          "aliases": [
+            "eye pus",
+            "discharge from eye",
+            "crusty eyes",
+            "sticky eyes"
+          ],
+          "red_flag": false
+        },
+        "tinnitus": {
+          "aliases": [
+            "ringing in ears",
+            "ear ringing",
+            "buzzing in ears"
+          ],
+          "red_flag": false
+        },
+        "hearing_loss": {
+          "aliases": [
+            "deafness",
+            "can't hear",
+            "muffled hearing",
+            "reduced hearing"
+          ],
+          "red_flag": false
+        },
+        "tooth_pain": {
+          "aliases": [
+            "toothache",
+            "dental pain",
+            "pain in tooth"
+          ],
+          "red_flag": false
+        },
+        "mouth_ulcers": {
+          "aliases": [
+            "mouth sores",
+            "ulcers in mouth",
+            "oral ulcers",
+            "canker sores"
+          ],
+          "red_flag": false
+        },
+        "gum_bleeding": {
+          "aliases": [
+            "bleeding gums",
+            "gums bleeding",
+            "gingival bleeding"
+          ],
+          "red_flag": false
         }
       }
     },
-    "Other": {
+    "Metabolic": {
       "symptoms": {
         "increased_thirst": {
           "aliases": [
             "excessive thirst",
             "very thirsty",
-            "always thirsty"
+            "always thirsty",
+            "polydipsia"
+          ],
+          "red_flag": false
+        },
+        "excessive_hunger": {
+          "aliases": [
+            "always hungry",
+            "increased appetite",
+            "polyphagia",
+            "ravenous hunger"
           ],
           "red_flag": false
         }
@@ -504,11 +992,15 @@
         "body_ache",
         "headache",
         "loss_of_appetite",
-        "sore_throat"
+        "sore_throat",
+        "loss_of_smell",
+        "loss_of_taste"
       ],
       "weights": {
         "shortness_of_breath": 1.5,
-        "loss_of_appetite": 1.1
+        "loss_of_appetite": 1.1,
+        "loss_of_smell": 1.3,
+        "loss_of_taste": 1.3
       },
       "risk_factors": {
         "age": [
@@ -653,7 +1145,12 @@
         "increased_thirst",
         "fatigue",
         "blurred_vision",
-        "weight_loss"
+        "weight_loss",
+        "slow_healing_wounds",
+        "excessive_hunger",
+        "mouth_ulcers",
+        "gum_bleeding",
+        "frequent_infections"
       ],
       "weights": {
         "frequent_urination": 1.3,
@@ -676,7 +1173,8 @@
         "dizziness",
         "chest_pain",
         "shortness_of_breath",
-        "blurred_vision"
+        "blurred_vision",
+        "leg_pain_walking"
       ],
       "weights": {},
       "risk_factors": {
@@ -697,7 +1195,8 @@
         "dizziness",
         "shortness_of_breath",
         "cold_hands_and_feet",
-        "headache"
+        "headache",
+        "rapid_heartbeat"
       ],
       "weights": {},
       "risk_factors": {
@@ -732,7 +1231,9 @@
         "rash",
         "fatigue",
         "headache",
-        "loss_of_appetite"
+        "loss_of_appetite",
+        "boils",
+        "peeling_skin"
       ],
       "weights": {},
       "risk_factors": {
@@ -769,7 +1270,9 @@
         "vomiting",
         "abdominal_pain",
         "yellowing_of_skin",
-        "loss_of_appetite"
+        "loss_of_appetite",
+        "dark_urine",
+        "pale_stool"
       ],
       "weights": {
         "yellowing_of_skin": 1.5
@@ -829,7 +1332,8 @@
         "headache",
         "runny_nose",
         "fatigue",
-        "fever"
+        "fever",
+        "tooth_pain"
       ],
       "weights": {},
       "risk_factors": {
@@ -846,7 +1350,9 @@
         "frequent_urination",
         "abdominal_pain",
         "blood_in_urine",
-        "fever"
+        "fever",
+        "difficulty_urinating",
+        "urinary_urgency"
       ],
       "weights": {
         "burning_urination": 1.4,
@@ -923,7 +1429,8 @@
         "fatigue",
         "insomnia",
         "difficulty_concentrating",
-        "loss_of_appetite"
+        "loss_of_appetite",
+        "panic_attacks"
       ],
       "weights": {},
       "risk_factors": {
@@ -940,11 +1447,741 @@
         "stiff_joints",
         "fatigue",
         "back_pain",
-        "muscle_pain"
+        "muscle_pain",
+        "knee_pain",
+        "shoulder_pain"
       ],
       "weights": {},
       "risk_factors": {
         "age": [
+          "elderly"
+        ]
+      }
+    },
+    "gerd": {
+      "category": "gastrointestinal",
+      "description": "Gastroesophageal reflux disease (GERD) is a chronic condition where stomach acid frequently flows back into the esophagus, causing irritation.",
+      "recommendation": "Avoid trigger foods, eat smaller meals, elevate head while sleeping, and take antacids or proton pump inhibitors.",
+      "emergency": false,
+      "symptoms": [
+        "heartburn",
+        "chest_pain",
+        "nausea",
+        "bloating",
+        "sore_throat",
+        "cough",
+        "abdominal_distension"
+      ],
+      "weights": {
+        "heartburn": 1.5,
+        "chest_pain": 1.2
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "tension_headache": {
+      "category": "neurological",
+      "description": "Tension headaches are the most common type of headache, causing a dull, aching sensation all over the head.",
+      "recommendation": "Rest, manage stress, take over-the-counter pain relievers, and practice relaxation techniques.",
+      "emergency": false,
+      "symptoms": [
+        "headache",
+        "neck_pain",
+        "irritability",
+        "difficulty_concentrating"
+      ],
+      "weights": {
+        "headache": 1.5,
+        "neck_pain": 1.2
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "mononucleosis": {
+      "category": "viral",
+      "description": "Mononucleosis (mono) is a viral infection caused by Epstein-Barr virus, causing fever, sore throat, and swollen glands.",
+      "recommendation": "Rest, stay hydrated, avoid strenuous activity, and manage symptoms with pain relievers.",
+      "emergency": false,
+      "symptoms": [
+        "fever",
+        "sore_throat",
+        "fatigue",
+        "swollen_glands",
+        "headache",
+        "rash",
+        "loss_of_appetite"
+      ],
+      "weights": {
+        "swollen_glands": 1.3,
+        "sore_throat": 1.3
+      },
+      "risk_factors": {
+        "age": [
+          "adolescent",
+          "adult"
+        ]
+      }
+    },
+    "conjunctivitis": {
+      "category": "inflammatory",
+      "description": "Conjunctivitis (pink eye) is inflammation of the conjunctiva, causing red, itchy, and sometimes discharge from the eye.",
+      "recommendation": "Avoid touching eyes, wash hands frequently, use prescribed eye drops, and avoid sharing towels.",
+      "emergency": false,
+      "symptoms": [
+        "red_eyes",
+        "itchy_eyes",
+        "eye_discharge",
+        "eye_pain",
+        "swollen_glands"
+      ],
+      "weights": {
+        "red_eyes": 1.4,
+        "itchy_eyes": 1.3,
+        "eye_discharge": 1.3
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "otitis_media": {
+      "category": "inflammatory",
+      "description": "Otitis media is an infection of the middle ear, causing ear pain, fever, and sometimes hearing loss.",
+      "recommendation": "Seek medical attention for antibiotics, manage pain with OTC pain relievers, and apply warm compresses.",
+      "emergency": false,
+      "symptoms": [
+        "ear_pain",
+        "fever",
+        "hearing_loss",
+        "ear_discharge",
+        "irritability",
+        "difficulty_concentrating"
+      ],
+      "weights": {
+        "ear_pain": 1.5,
+        "fever": 1.2
+      },
+      "risk_factors": {
+        "age": [
+          "child"
+        ]
+      }
+    },
+    "laryngitis": {
+      "category": "respiratory",
+      "description": "Laryngitis is inflammation of the voice box (larynx), causing hoarseness and voice loss.",
+      "recommendation": "Rest your voice, stay hydrated, use a humidifier, and avoid irritants like smoke.",
+      "emergency": false,
+      "symptoms": [
+        "hoarseness",
+        "sore_throat",
+        "cough",
+        "fever",
+        "difficulty_concentrating",
+        "throat_swelling"
+      ],
+      "weights": {
+        "hoarseness": 1.5,
+        "sore_throat": 1.2
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "appendicitis": {
+      "category": "gastrointestinal",
+      "description": "Appendicitis is inflammation of the appendix, a medical emergency requiring immediate surgical removal.",
+      "recommendation": "Seek emergency medical care immediately. Do not eat or drink anything. Surgery is required.",
+      "emergency": true,
+      "symptoms": [
+        "abdominal_pain",
+        "nausea",
+        "vomiting",
+        "fever",
+        "loss_of_appetite",
+        "bloating"
+      ],
+      "weights": {
+        "abdominal_pain": 1.5
+      },
+      "risk_factors": {
+        "age": [
+          "adolescent",
+          "adult"
+        ]
+      }
+    },
+    "kidney_stones": {
+      "category": "urological",
+      "description": "Kidney stones are hard deposits of minerals and salts that form inside the kidneys, causing severe pain.",
+      "recommendation": "Seek medical attention, drink plenty of fluids, and take pain medication. Large stones may require surgery.",
+      "emergency": true,
+      "symptoms": [
+        "abdominal_pain",
+        "blood_in_urine",
+        "nausea",
+        "vomiting",
+        "burning_urination",
+        "frequent_urination"
+      ],
+      "weights": {
+        "abdominal_pain": 1.4,
+        "blood_in_urine": 1.3
+      },
+      "risk_factors": {
+        "age": [
+          "adult",
+          "middle_aged"
+        ]
+      }
+    },
+    "stroke": {
+      "category": "cardiovascular",
+      "description": "Stroke occurs when blood supply to part of the brain is interrupted, causing brain cell death. It is a medical emergency.",
+      "recommendation": "Call emergency services immediately. Time is critical. Note the time symptoms started.",
+      "emergency": true,
+      "symptoms": [
+        "confusion",
+        "numbness",
+        "blurred_vision",
+        "difficulty_concentrating",
+        "loss_of_consciousness",
+        "dizziness",
+        "double_vision",
+        "memory_problems"
+      ],
+      "weights": {
+        "confusion": 1.4,
+        "numbness": 1.3,
+        "blurred_vision": 1.2
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "heart_attack": {
+      "category": "cardiovascular",
+      "description": "Myocardial infarction (heart attack) occurs when blood flow to the heart muscle is blocked, causing tissue damage.",
+      "recommendation": "Call emergency services immediately. Chew aspirin if not allergic. Do not drive yourself to hospital.",
+      "emergency": true,
+      "symptoms": [
+        "chest_pain",
+        "shortness_of_breath",
+        "rapid_heartbeat",
+        "sweating",
+        "nausea",
+        "dizziness",
+        "swollen_ankles"
+      ],
+      "weights": {
+        "chest_pain": 1.5,
+        "shortness_of_breath": 1.4,
+        "rapid_heartbeat": 1.3
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "copd": {
+      "category": "respiratory",
+      "description": "Chronic Obstructive Pulmonary Disease (COPD) is a progressive lung disease causing breathing difficulties.",
+      "recommendation": "Quit smoking, use prescribed inhalers, attend pulmonary rehabilitation, and avoid lung irritants.",
+      "emergency": false,
+      "symptoms": [
+        "shortness_of_breath",
+        "cough",
+        "wheezing",
+        "fatigue",
+        "chest_pain",
+        "rapid_breathing",
+        "slow_heartbeat"
+      ],
+      "weights": {
+        "shortness_of_breath": 1.4,
+        "wheezing": 1.3
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "hypothyroidism": {
+      "category": "metabolic",
+      "description": "Hypothyroidism is an underactive thyroid gland that doesn't produce enough thyroid hormones, slowing metabolism.",
+      "recommendation": "Take thyroid hormone replacement medication as prescribed, and get regular blood tests.",
+      "emergency": false,
+      "symptoms": [
+        "fatigue",
+        "weight_gain",
+        "sensitivity_to_cold",
+        "dry_skin",
+        "constipation",
+        "sadness",
+        "hair_loss",
+        "muscle_pain",
+        "muscle_cramps",
+        "skin_discoloration"
+      ],
+      "weights": {
+        "sensitivity_to_cold": 1.3,
+        "weight_gain": 1.2,
+        "dry_skin": 1.1
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "hyperthyroidism": {
+      "category": "metabolic",
+      "description": "Hyperthyroidism is an overactive thyroid gland producing too much thyroid hormone, speeding up metabolism.",
+      "recommendation": "Take anti-thyroid medication, radioactive iodine therapy, or surgery as recommended by your doctor.",
+      "emergency": false,
+      "symptoms": [
+        "weight_loss",
+        "rapid_heartbeat",
+        "anxiety",
+        "tremors",
+        "sensitivity_to_heat",
+        "sweating",
+        "difficulty_concentrating",
+        "insomnia"
+      ],
+      "weights": {
+        "rapid_heartbeat": 1.3,
+        "weight_loss": 1.2,
+        "tremors": 1.2
+      },
+      "risk_factors": {
+        "age": [
+          "adult",
+          "middle_aged"
+        ]
+      }
+    },
+    "gout": {
+      "category": "metabolic",
+      "description": "Gout is a form of inflammatory arthritis caused by excess uric acid in the blood, causing sudden severe joint pain.",
+      "recommendation": "Take anti-inflammatory medication, avoid high-purine foods, stay hydrated, and rest the affected joint.",
+      "emergency": false,
+      "symptoms": [
+        "joint_pain",
+        "joint_swelling",
+        "red_eyes",
+        "fever",
+        "fatigue"
+      ],
+      "weights": {
+        "joint_pain": 1.5,
+        "joint_swelling": 1.4
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "fibromyalgia": {
+      "category": "musculoskeletal",
+      "description": "Fibromyalgia is a chronic condition causing widespread musculoskeletal pain, fatigue, and cognitive difficulties.",
+      "recommendation": "Exercise regularly, manage stress, take prescribed medications, and maintain good sleep hygiene.",
+      "emergency": false,
+      "symptoms": [
+        "muscle_pain",
+        "joint_pain",
+        "fatigue",
+        "insomnia",
+        "difficulty_concentrating",
+        "headache",
+        "sadness",
+        "anxiety",
+        "tinnitus",
+        "muscle_cramps"
+      ],
+      "weights": {
+        "muscle_pain": 1.3,
+        "fatigue": 1.2,
+        "difficulty_concentrating": 1.1
+      },
+      "risk_factors": {
+        "age": [
+          "adult",
+          "middle_aged"
+        ]
+      }
+    },
+    "ibs": {
+      "category": "gastrointestinal",
+      "description": "Irritable Bowel Syndrome (IBS) is a chronic gastrointestinal disorder causing abdominal pain, bloating, and altered bowel habits.",
+      "recommendation": "Follow a low-FODMAP diet, manage stress, exercise regularly, and use prescribed medications.",
+      "emergency": false,
+      "symptoms": [
+        "abdominal_pain",
+        "bloating",
+        "diarrhea",
+        "constipation",
+        "nausea",
+        "fatigue",
+        "abdominal_distension"
+      ],
+      "weights": {
+        "abdominal_pain": 1.3,
+        "bloating": 1.2
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "diverticulitis": {
+      "category": "gastrointestinal",
+      "description": "Diverticulitis is inflammation or infection of small pouches (diverticula) that develop in the colon.",
+      "recommendation": "Seek medical attention, take prescribed antibiotics, follow a liquid diet initially, then high-fiber diet.",
+      "emergency": true,
+      "symptoms": [
+        "abdominal_pain",
+        "fever",
+        "nausea",
+        "vomiting",
+        "bloating",
+        "constipation"
+      ],
+      "weights": {
+        "abdominal_pain": 1.4
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "pancreatitis": {
+      "category": "gastrointestinal",
+      "description": "Pancreatitis is inflammation of the pancreas, which can be acute or chronic, causing severe abdominal pain.",
+      "recommendation": "Seek emergency care for acute pancreatitis. Stop alcohol, follow a low-fat diet, and take prescribed medications.",
+      "emergency": true,
+      "symptoms": [
+        "abdominal_pain",
+        "nausea",
+        "vomiting",
+        "fever",
+        "rapid_heartbeat",
+        "bloating"
+      ],
+      "weights": {
+        "abdominal_pain": 1.5
+      },
+      "risk_factors": {
+        "age": [
+          "adult",
+          "middle_aged"
+        ]
+      }
+    },
+    "cholecystitis": {
+      "category": "gastrointestinal",
+      "description": "Cholecystitis is inflammation of the gallbladder, usually caused by gallstones blocking the bile duct.",
+      "recommendation": "Seek medical care, follow a low-fat diet, and surgery may be required to remove the gallbladder.",
+      "emergency": true,
+      "symptoms": [
+        "abdominal_pain",
+        "nausea",
+        "vomiting",
+        "fever",
+        "bloating",
+        "loss_of_appetite",
+        "yellowing_of_skin",
+        "dark_urine"
+      ],
+      "weights": {
+        "abdominal_pain": 1.4
+      },
+      "risk_factors": {
+        "age": [
+          "adult",
+          "middle_aged"
+        ]
+      }
+    },
+    "lupus": {
+      "category": "autoimmune",
+      "description": "Systemic Lupus Erythematosus (SLE) is a chronic autoimmune disease where the immune system attacks healthy tissue.",
+      "recommendation": "Take immunosuppressive medication, avoid sun exposure, manage fatigue, and see a rheumatologist regularly.",
+      "emergency": false,
+      "symptoms": [
+        "fatigue",
+        "joint_pain",
+        "rash",
+        "fever",
+        "hair_loss",
+        "sensitivity_to_cold",
+        "difficulty_concentrating",
+        "muscle_pain",
+        "bruising_easily",
+        "frequent_infections",
+        "skin_lesions"
+      ],
+      "weights": {
+        "rash": 1.3,
+        "joint_pain": 1.2,
+        "hair_loss": 1.1
+      },
+      "risk_factors": {
+        "age": [
+          "adult",
+          "middle_aged"
+        ]
+      }
+    },
+    "rheumatoid_arthritis": {
+      "category": "autoimmune",
+      "description": "Rheumatoid arthritis is an autoimmune disorder where the immune system attacks joint linings, causing painful swelling.",
+      "recommendation": "Take disease-modifying antirheumatic drugs (DMARDs), exercise gently, and consult a rheumatologist.",
+      "emergency": false,
+      "symptoms": [
+        "joint_pain",
+        "joint_swelling",
+        "stiff_joints",
+        "fatigue",
+        "fever",
+        "muscle_pain"
+      ],
+      "weights": {
+        "joint_pain": 1.4,
+        "joint_swelling": 1.3,
+        "stiff_joints": 1.2
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "multiple_sclerosis": {
+      "category": "autoimmune",
+      "description": "Multiple sclerosis is an autoimmune disease affecting the central nervous system, disrupting communication between brain and body.",
+      "recommendation": "Take disease-modifying therapies, manage symptoms with physical therapy, and avoid heat exposure.",
+      "emergency": false,
+      "symptoms": [
+        "numbness",
+        "blurred_vision",
+        "fatigue",
+        "difficulty_concentrating",
+        "muscle_pain",
+        "dizziness",
+        "mood_swings"
+      ],
+      "weights": {
+        "numbness": 1.3,
+        "blurred_vision": 1.2,
+        "difficulty_concentrating": 1.1
+      },
+      "risk_factors": {
+        "age": [
+          "adult",
+          "middle_aged"
+        ]
+      }
+    },
+    "parkinsons": {
+      "category": "neurological",
+      "description": "Parkinson's disease is a progressive nervous system disorder affecting movement, causing tremors and stiffness.",
+      "recommendation": "Take dopamine-enhancing medications, exercise regularly, and work with a neurologist.",
+      "emergency": false,
+      "symptoms": [
+        "tremors",
+        "stiff_joints",
+        "difficulty_concentrating",
+        "dizziness",
+        "sadness",
+        "fatigue",
+        "memory_problems"
+      ],
+      "weights": {
+        "tremors": 1.5,
+        "stiff_joints": 1.3
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "epilepsy": {
+      "category": "neurological",
+      "description": "Epilepsy is a neurological disorder causing recurrent seizures due to abnormal electrical activity in the brain.",
+      "recommendation": "Take anti-epileptic medications as prescribed, avoid seizure triggers, and get adequate sleep.",
+      "emergency": false,
+      "symptoms": [
+        "seizure",
+        "confusion",
+        "fatigue",
+        "loss_of_consciousness",
+        "difficulty_concentrating",
+        "memory_problems"
+      ],
+      "weights": {
+        "seizure": 1.5
+      },
+      "risk_factors": {
+        "age": [
+          "child",
+          "adolescent"
+        ]
+      }
+    },
+    "chronic_fatigue_syndrome": {
+      "category": "autoimmune",
+      "description": "Chronic fatigue syndrome (ME/CFS) is a complex disorder causing extreme fatigue that doesn't improve with rest.",
+      "recommendation": "Pace activities, prioritize sleep, manage stress, and work with a specialist for symptom management.",
+      "emergency": false,
+      "symptoms": [
+        "fatigue",
+        "headache",
+        "joint_pain",
+        "difficulty_concentrating",
+        "insomnia",
+        "muscle_pain",
+        "sore_throat",
+        "swollen_glands",
+        "nosebleed"
+      ],
+      "weights": {
+        "fatigue": 1.5,
+        "difficulty_concentrating": 1.2
+      },
+      "risk_factors": {
+        "age": [
+          "adult",
+          "middle_aged"
+        ]
+      }
+    },
+    "food_poisoning": {
+      "category": "gastrointestinal",
+      "description": "Food poisoning is an illness caused by eating contaminated food, leading to nausea, vomiting, and diarrhea.",
+      "recommendation": "Stay hydrated, rest, avoid solid food until vomiting stops, and seek medical care if symptoms are severe.",
+      "emergency": false,
+      "symptoms": [
+        "nausea",
+        "vomiting",
+        "diarrhea",
+        "abdominal_pain",
+        "fever",
+        "chills",
+        "fatigue"
+      ],
+      "weights": {
+        "vomiting": 1.3,
+        "diarrhea": 1.3
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "whooping_cough": {
+      "category": "bacterial",
+      "description": "Whooping cough (pertussis) is a highly contagious bacterial infection causing severe coughing fits.",
+      "recommendation": "Seek medical treatment with antibiotics, stay isolated, and ensure vaccination for prevention.",
+      "emergency": false,
+      "symptoms": [
+        "cough",
+        "sore_throat",
+        "runny_nose",
+        "fever",
+        "fatigue",
+        "vomiting"
+      ],
+      "weights": {
+        "cough": 1.5
+      },
+      "risk_factors": {
+        "age": [
+          "child"
+        ]
+      }
+    },
+    "scarlet_fever": {
+      "category": "bacterial",
+      "description": "Scarlet fever is a bacterial infection causing a distinctive red rash, high fever, and sore throat.",
+      "recommendation": "Seek medical treatment with antibiotics, stay isolated, and maintain good hygiene.",
+      "emergency": false,
+      "symptoms": [
+        "fever",
+        "rash",
+        "sore_throat",
+        "headache",
+        "nausea",
+        "swollen_glands"
+      ],
+      "weights": {
+        "rash": 1.4,
+        "sore_throat": 1.3
+      },
+      "risk_factors": {
+        "age": [
+          "child"
+        ]
+      }
+    },
+    "celiac_disease": {
+      "category": "autoimmune",
+      "description": "Celiac disease is an autoimmune disorder where ingesting gluten leads to damage in the small intestine.",
+      "recommendation": "Follow a strict gluten-free diet, take nutritional supplements, and monitor with a gastroenterologist.",
+      "emergency": false,
+      "symptoms": [
+        "diarrhea",
+        "bloating",
+        "abdominal_pain",
+        "fatigue",
+        "weight_loss",
+        "pale_skin",
+        "joint_pain",
+        "rash"
+      ],
+      "weights": {
+        "diarrhea": 1.2,
+        "bloating": 1.2,
+        "abdominal_pain": 1.1
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "hemorrhoids": {
+      "category": "gastrointestinal",
+      "description": "Hemorrhoids are swollen veins in the lower rectum and anus, causing pain, itching, and bleeding.",
+      "recommendation": "Increase fiber intake, use stool softeners, take sitz baths, and consult a doctor for persistent cases.",
+      "emergency": false,
+      "symptoms": [
+        "blood_in_stool",
+        "abdominal_pain",
+        "itchy_skin",
+        "pale_stool"
+      ],
+      "weights": {
+        "blood_in_stool": 1.3
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
           "elderly"
         ]
       }
