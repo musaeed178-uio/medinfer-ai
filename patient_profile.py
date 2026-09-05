@@ -24,10 +24,10 @@ class PatientProfile:
         os.makedirs(self.data_dir, exist_ok=True)
         self.profiles_path = os.path.join(self.data_dir, "saved_profiles.json")
         self.history_path = os.path.join(self.data_dir, "diagnosis_history.json")
+        self.session_path = os.path.join(self.data_dir, "session.json")
         self.saved_profiles: list[dict[str, Any]] = self._load_profiles()
-        self.current_profile: dict[str, Any] = (
-            self.saved_profiles[0] if self.saved_profiles else self._create_default_profile()
-        )
+        self.is_guest: bool = True
+        self.current_profile: dict[str, Any] = self._load_session()
         self.history: list[dict[str, Any]] = self._load_history()
 
     # ------------------------------------------------------------------
@@ -54,6 +54,46 @@ class PatientProfile:
         with open(self.profiles_path, "w", encoding="utf-8") as f:
             json.dump(self.saved_profiles, f, ensure_ascii=False, indent=2)
 
+    # ------------------------------------------------------------------
+    # Session management
+    # ------------------------------------------------------------------
+    def _load_session(self) -> dict[str, Any]:
+        """Restore the last-active profile on startup, falling back to guest."""
+        if os.path.exists(self.session_path):
+            try:
+                with open(self.session_path, encoding="utf-8") as f:
+                    session = json.load(f)
+                profile_name = session.get("profile_name", "")
+                if profile_name:
+                    for i, p in enumerate(self.saved_profiles):
+                        if p.get("name") == profile_name:
+                            self.is_guest = False
+                            return self.saved_profiles[i].copy()
+            except (json.JSONDecodeError, KeyError):
+                pass
+        self.is_guest = True
+        return self._create_default_profile()
+
+    def _save_session(self) -> None:
+        """Persist the current profile name so the next launch restores it."""
+        data = {"profile_name": self.current_profile.get("name", "")}
+        with open(self.session_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+    def switch_profile(self, index: int) -> bool:
+        """Load a saved profile by index and mark it as the active session."""
+        if self.load_profile(index):
+            self.is_guest = False
+            self._save_session()
+            return True
+        return False
+
+    def set_guest(self) -> None:
+        """Switch to the anonymous guest profile."""
+        self.current_profile = self._create_default_profile()
+        self.is_guest = True
+        self._save_session()
+
     def save_current_profile(self) -> None:
         # Update or add current profile.
         name = self.current_profile.get("name", "").strip()
@@ -66,9 +106,13 @@ class PatientProfile:
             if profile.get("name") == name:
                 self.saved_profiles[i] = self.current_profile
                 self._save_profiles()
+                self.is_guest = False
+                self._save_session()
                 return
         self.saved_profiles.append(self.current_profile)
         self._save_profiles()
+        self.is_guest = False
+        self._save_session()
 
     def get_current_profile(self) -> dict[str, Any]:
         return self.current_profile.copy()
@@ -79,6 +123,8 @@ class PatientProfile:
     def load_profile(self, index: int) -> bool:
         if 0 <= index < len(self.saved_profiles):
             self.current_profile = self.saved_profiles[index].copy()
+            self.is_guest = False
+            self._save_session()
             return True
         return False
 
@@ -88,10 +134,14 @@ class PatientProfile:
             self._save_profiles()
             if not self.saved_profiles:
                 self.current_profile = self._create_default_profile()
+                self.is_guest = True
             elif index >= len(self.saved_profiles):
                 self.current_profile = self.saved_profiles[-1].copy()
+                self.is_guest = False
             else:
                 self.current_profile = self.saved_profiles[index].copy()
+                self.is_guest = False
+            self._save_session()
             return True
         return False
 
