@@ -14,42 +14,52 @@ from typing import Any, Optional
 
 import customtkinter as ctk
 
-from controller import MedicalController, MedicalEngineError
+from core.manager import DiagnosisManager
+from core.models import DiagnosisOutcome, DiagnosisSession
 from kb_catalog import DiagnosisResult, humanize
-from patient_profile import PatientProfile
-from report_exporter import ReportExporter
-from symptom_extractor import ExtractionResult, SymptomExtractor
+from symptom_extractor import ExtractionResult
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
+
+# ── Clinical Precision palette ──────────────────────────────────────
+# Deep blue-charcoal surfaces with trust-blue accents.
+# Avoids the generic cyan-on-black AI-generated default.
+BG_BASE = "#0D1117"
+BG_SURFACE = "#151B23"
+BG_CARD = "#1C2333"
+BG_CARD_INNER = "#0D1117"
+BORDER_COLOR = "#21262D"
+BORDER_LIGHT = "#30363D"
+
+ACCENT_BLUE = "#3B82F6"       # primary actions, headings
+ACCENT_GREEN = "#10B981"      # health, success, self-care
+ACCENT_AMBER = "#F59E0B"      # warnings, guest badge
+ACCENT_RED = "#EF4444"        # emergency, danger
+
+TEXT_PRIMARY = "#E6EDF3"
+TEXT_SECONDARY = "#8B949E"
+TEXT_MUTED = "#484F58"
 
 SEVERITY_LABELS = ("Mild", "Moderate", "Severe")
 _SEVERITY_VALUE = {label: label.lower() for label in SEVERITY_LABELS}
 _SEVERITY_TITLE = {value: label for label, value in _SEVERITY_VALUE.items()}
 
 TRIAGE_COLORS = {
-    "EMERGENCY": "#e74c3c",
-    "URGENT": "#f1c40f",
-    "SELF_CARE": "#2ecc71",
+    "EMERGENCY": ACCENT_RED,
+    "URGENT": ACCENT_AMBER,
+    "SELF_CARE": ACCENT_GREEN,
 }
 LIKELIHOOD = (
-    (40, "Low", "#2ecc71"),
-    (70, "Moderate", "#f1c40f"),
-    (101, "High", "#e74c3c"),
+    (40, "Low", ACCENT_GREEN),
+    (70, "Moderate", ACCENT_AMBER),
+    (101, "High", ACCENT_RED),
 )
 
 
 class ModernMedicalGUI:
-    def __init__(self):
-        try:
-            self.controller = MedicalController()
-        except MedicalEngineError as exc:
-            messagebox.showerror("MedInfer AI could not start", str(exc))
-            raise SystemExit(1) from exc
-
-        self.patient = PatientProfile()
-        self.exporter = ReportExporter()
-        self.extractor = SymptomExtractor(self.controller.catalog)
+    def __init__(self, manager: DiagnosisManager):
+        self.manager = manager
 
         self.selected_symptoms: dict[str, str] = {}   # symptom id -> severity value
         self.symptom_widgets: dict[str, dict[str, Any]] = {}
@@ -57,14 +67,23 @@ class ModernMedicalGUI:
         self.last_extraction: Optional[ExtractionResult] = None
 
         self.root = ctk.CTk()
-        self.root.title("MedInfer AI - Medical Diagnosis System")
+        self.root.title("MedInfer AI — Medical Diagnosis System")
         self.root.geometry("1400x900")
         self.root.minsize(1200, 800)
-        self.root.configure(fg_color="#0f1115")
+        self.root.configure(fg_color=BG_BASE)
 
         self._build_layout()
         self._build_symptom_browser()
         self._update_patient_label()
+
+    # ── Convenience accessors (thin adapter layer) ──────────────────
+    @property
+    def patient(self):
+        return self.manager.patient
+
+    @property
+    def controller(self):
+        return self.manager._controller
 
     # ==================================================================
     # Layout
@@ -73,7 +92,7 @@ class ModernMedicalGUI:
         self.main_container = ctk.CTkFrame(self.root, fg_color="transparent")
         self.main_container.pack(fill="both", expand=True, padx=10, pady=10)
 
-        self.sidebar = ctk.CTkFrame(self.main_container, width=240, corner_radius=16, fg_color="#161922")
+        self.sidebar = ctk.CTkFrame(self.main_container, width=240, corner_radius=0, fg_color=BG_SURFACE)
         self.sidebar.pack(side="left", fill="y", padx=(0, 12), pady=0)
         self.sidebar.pack_propagate(False)
         self._build_sidebar()
@@ -89,31 +108,50 @@ class ModernMedicalGUI:
         self.show_frame("dashboard")
 
     def _build_sidebar(self):
-        ctk.CTkLabel(self.sidebar, text="🏥 MedInfer AI", font=("Segoe UI", 24, "bold"),
-                     text_color="#00d4ff").pack(pady=25)
+        # ── Brand mark ──
+        brand_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
+        brand_frame.pack(fill="x", padx=20, pady=(28, 6))
+        ctk.CTkLabel(brand_frame, text="MedInfer", font=("Segoe UI", 22, "bold"),
+                     text_color=TEXT_PRIMARY).pack(anchor="w")
+        ctk.CTkLabel(brand_frame, text="AI Clinical Assistant", font=("Segoe UI", 10),
+                     text_color=TEXT_MUTED).pack(anchor="w")
+
+        # ── Thin divider ──
+        divider = ctk.CTkFrame(self.sidebar, height=1, fg_color=BORDER_COLOR)
+        divider.pack(fill="x", padx=20, pady=(12, 16))
+
+        # ── Navigation ──
         nav_items = [
-            ("📊 Dashboard", "dashboard"),
-            ("📖 Disease Info", "disease_info"),
-            ("📜 History", "history"),
-            ("👤 Patient Profile", "profile"),
+            ("Dashboard", "dashboard"),
+            ("Disease Info", "disease_info"),
+            ("History", "history"),
+            ("Patient Profile", "profile"),
         ]
         self.nav_buttons = {}
         for text, key in nav_items:
-            btn = ctk.CTkButton(self.sidebar, text=text, fg_color="transparent",
-                                hover_color="#2a2d3e", font=("Segoe UI", 15), anchor="w",
-                                height=48, corner_radius=10,
+            btn = ctk.CTkButton(self.sidebar, text=f"  {text}", fg_color="transparent",
+                                hover_color=BG_CARD, font=("Segoe UI", 13), anchor="w",
+                                height=42, corner_radius=8,
                                 command=lambda k=key: self.show_frame(k))
-            btn.pack(fill="x", padx=12, pady=4)
+            btn.pack(fill="x", padx=12, pady=2)
             self.nav_buttons[key] = btn
-        ctk.CTkLabel(self.sidebar, text="v2.0 | AI Expert System", text_color="#555",
-                     font=("Segoe UI", 10)).pack(side="bottom", pady=(0, 10))
+
+        # ── Version footer ──
+        ctk.CTkLabel(self.sidebar, text="v3.0  ·  AI Expert System",
+                     text_color=TEXT_MUTED, font=("Segoe UI", 9)).pack(
+            side="bottom", pady=(0, 14))
 
     def show_frame(self, frame_name):
         for f in self.frames.values():
             f.pack_forget()
         self.frames[frame_name].pack(fill="both", expand=True)
         for key, btn in self.nav_buttons.items():
-            btn.configure(fg_color="#2a2d3e" if key == frame_name else "transparent")
+            if key == frame_name:
+                btn.configure(fg_color=BG_CARD, text_color=ACCENT_BLUE,
+                              font=("Segoe UI", 13, "bold"))
+            else:
+                btn.configure(fg_color="transparent", text_color=TEXT_SECONDARY,
+                              font=("Segoe UI", 13))
 
     def _build_dashboard(self):
         dash = ctk.CTkFrame(self.content_area, fg_color="transparent")
@@ -122,21 +160,44 @@ class ModernMedicalGUI:
         dash.grid_columnconfigure(1, weight=1)
         dash.grid_rowconfigure(1, weight=1)
 
-        top_bar = ctk.CTkFrame(dash, fg_color="#161922", corner_radius=12, height=65)
+        top_bar = ctk.CTkFrame(dash, fg_color=BG_SURFACE, corner_radius=10, height=65)
         top_bar.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 15))
         top_bar.grid_columnconfigure(0, weight=1)
 
-        self.patient_label = ctk.CTkLabel(top_bar, text="Patient: Guest",
-                                          font=("Segoe UI", 16, "bold"), text_color="#e0e0e0")
-        self.patient_label.grid(row=0, column=0, sticky="w", padx=20, pady=15)
+        patient_frame = ctk.CTkFrame(top_bar, fg_color="transparent")
+        patient_frame.grid(row=0, column=0, sticky="w", padx=20, pady=10)
+
+        self.patient_label = ctk.CTkLabel(patient_frame, text="Patient: Guest",
+                                          font=("Segoe UI", 16, "bold"), text_color=TEXT_PRIMARY)
+        self.patient_label.pack(side="left")
+
+        self.profile_badge = ctk.CTkLabel(patient_frame, text="  GUEST",
+                                          font=("Segoe UI", 10, "bold"),
+                                          text_color="#000",
+                                          fg_color=ACCENT_AMBER,
+                                          corner_radius=4,
+                                          padx=8, pady=2)
+        self.profile_badge.pack(side="left", padx=(10, 0))
+
+        self.choose_profile_btn = ctk.CTkButton(
+            patient_frame, text="Sign In",
+            command=self._show_profile_chooser,
+            fg_color=BORDER_LIGHT, hover_color=BG_CARD,
+            font=("Segoe UI", 11), width=100, height=30)
+        self.choose_profile_btn.pack(side="left", padx=(12, 0))
+
+        self.guest_note = ctk.CTkLabel(
+            patient_frame,
+            text="Records won't be saved with guest profile",
+            font=("Segoe UI", 10), text_color=ACCENT_AMBER)
 
         self.export_format = ctk.StringVar(value="PDF")
         format_menu = ctk.CTkOptionMenu(top_bar, values=["PDF", "TXT"], variable=self.export_format,
-                                        width=90, fg_color="#2a2d3e", button_color="#3a3f5c")
-        format_menu.grid(row=0, column=1, sticky="e", padx=(0, 6), pady=15)
-        ctk.CTkButton(top_bar, text="📤 Export Report", command=self._export_report,
-                      fg_color="#2a2d3e", width=130).grid(row=0, column=2, sticky="e",
-                                                          padx=(0, 15), pady=15)
+                                        width=90, fg_color=BORDER_LIGHT, button_color=BG_CARD)
+        format_menu.grid(row=0, column=2, sticky="e", padx=(0, 6), pady=15)
+        ctk.CTkButton(top_bar, text="Export Report", command=self._export_report,
+                      fg_color=BORDER_LIGHT, text_color=TEXT_SECONDARY, width=130).grid(
+        row=0, column=3, sticky="e", padx=(0, 15), pady=15)
 
         self.symptom_panel = self._create_scrollable_panel(dash, "Symptom Input & Selection", 1, 0)
 
@@ -148,24 +209,27 @@ class ModernMedicalGUI:
 
         self.diag_panel = self._create_scrollable_panel(self.right_panel, "Differential Diagnosis", 0, 0)
 
-        self.exp_panel = ctk.CTkFrame(self.right_panel, corner_radius=12, fg_color="#161922")
+        self.exp_panel = ctk.CTkFrame(self.right_panel, corner_radius=10, fg_color=BG_SURFACE)
         self.exp_panel.grid(row=1, column=0, sticky="nsew", pady=(12, 0))
 
         header = ctk.CTkFrame(self.exp_panel, fg_color="transparent")
         header.pack(fill="x", padx=15, pady=(12, 0))
-        ctk.CTkLabel(header, text="🤖 AI Reasoning Engine", font=("Segoe UI", 14, "bold"),
-                     text_color="#00d4ff").pack(side="left")
+        ctk.CTkLabel(header, text="AI Reasoning Engine", font=("Segoe UI", 14, "bold"),
+                     text_color=ACCENT_BLUE).pack(side="left")
         self.triage_label = ctk.CTkLabel(self.exp_panel, text="", font=("Segoe UI", 12, "bold"),
-                                         corner_radius=8, fg_color="transparent",
+                                         corner_radius=6, fg_color="transparent",
                                          wraplength=600, justify="left")
         self.exp_text = ctk.CTkTextbox(self.exp_panel, font=("Segoe UI", 12), wrap="word",
-                                       fg_color="#1e212b", text_color="#d0d0d0")
+                                       fg_color=BG_CARD, text_color=TEXT_PRIMARY)
         self.exp_text.pack(fill="both", expand=True, padx=15, pady=(8, 15))
 
         self._build_symptom_controls()
 
     def _create_scrollable_panel(self, parent, title, row, col):
-        panel = ctk.CTkScrollableFrame(parent, label_text=title, corner_radius=12, fg_color="#161922")
+        panel = ctk.CTkScrollableFrame(parent, label_text=title, corner_radius=10,
+                                       fg_color=BG_SURFACE,
+                                       label_font=("Segoe UI", 12, "bold"),
+                                       label_text_color=TEXT_SECONDARY)
         panel.grid(row=row, column=col, sticky="nsew")
         return panel
 
@@ -173,43 +237,53 @@ class ModernMedicalGUI:
     # Symptom input
     # ==================================================================
     def _build_symptom_controls(self):
-        self.nlp_frame = ctk.CTkFrame(self.symptom_panel, fg_color="#1e212b", corner_radius=10)
+        self.nlp_frame = ctk.CTkFrame(self.symptom_panel, fg_color=BG_CARD, corner_radius=10)
         self.nlp_frame.pack(fill="x", pady=(0, 12))
-        ctk.CTkLabel(self.nlp_frame, text="💬 Natural Language Input",
-                     font=("Segoe UI", 12, "bold"), text_color="#00d4ff").pack(anchor="w",
+        ctk.CTkLabel(self.nlp_frame, text="Natural Language Input",
+                     font=("Segoe UI", 12, "bold"), text_color=ACCENT_BLUE).pack(anchor="w",
                                                                                padx=12, pady=(10, 5))
         self.nlp_entry = ctk.CTkTextbox(self.nlp_frame, height=50, font=("Segoe UI", 11),
-                                        fg_color="#0f1115")
+                                        fg_color=BG_BASE, text_color=TEXT_SECONDARY)
         self.nlp_entry.pack(fill="x", padx=12, pady=(0, 8))
         self.nlp_entry.insert("0.0", "Example: I have a high fever, cough, and severe headache for 2 days...")
 
         nlp_btn_frame = ctk.CTkFrame(self.nlp_frame, fg_color="transparent")
         nlp_btn_frame.pack(fill="x", padx=12, pady=(0, 10))
-        ctk.CTkButton(nlp_btn_frame, text="🔍 Analyze Text", command=self._analyze_nlp,
-                      width=120, fg_color="#00d4ff", text_color="#000",
+        ctk.CTkButton(nlp_btn_frame, text="Analyze", command=self._analyze_nlp,
+                      width=100, fg_color=ACCENT_BLUE, text_color="#fff",
                       font=("Segoe UI", 11, "bold")).pack(side="left")
+        ctk.CTkButton(nlp_btn_frame, text="Run Diagnosis", command=self._run_diagnosis,
+                      width=130, fg_color=ACCENT_GREEN, text_color="#fff",
+                      font=("Segoe UI", 11, "bold")).pack(side="left", padx=(8, 0))
+        ctk.CTkButton(nlp_btn_frame, text="Clear All", command=self._clear_symptoms,
+                      width=90, fg_color="transparent", border_width=1,
+                      border_color=BORDER_LIGHT, text_color=TEXT_SECONDARY,
+                      font=("Segoe UI", 11)).pack(side="left", padx=(6, 0))
         self.nlp_feedback = ctk.CTkLabel(nlp_btn_frame, text="", font=("Segoe UI", 11),
-                                         text_color="#00d4ff")
+                                         text_color=ACCENT_GREEN)
         self.nlp_feedback.pack(side="right")
 
         self.search_var = tk.StringVar()
         self.search_var.trace_add("write", self._filter_symptoms)
-        ctk.CTkEntry(self.symptom_panel, placeholder_text="🔍 Search symptoms...",
+        ctk.CTkEntry(self.symptom_panel, placeholder_text="Search symptoms...",
                      textvariable=self.search_var, height=35,
-                     fg_color="#1e212b").pack(fill="x", pady=(0, 10))
+                     fg_color=BG_CARD, text_color=TEXT_PRIMARY,
+                     border_color=BORDER_COLOR).pack(fill="x", pady=(0, 10))
 
         self.symptom_container = ctk.CTkFrame(self.symptom_panel, fg_color="transparent")
         self.symptom_container.pack(fill="both", expand=True)
 
         self.action_frame = ctk.CTkFrame(self.symptom_panel, fg_color="transparent")
-        self.action_frame.pack(fill="x", pady=15)
+        self.action_frame.pack(fill="x", pady=(5, 15))
 
-        self.diagnose_btn = ctk.CTkButton(self.action_frame, text="🔍 Run Diagnosis",
-                                          command=self._run_diagnosis, fg_color="#00d4ff",
-                                          text_color="#000", font=("Segoe UI", 14, "bold"))
+        self.diagnose_btn = ctk.CTkButton(self.action_frame, text="Run Diagnosis",
+                                          command=self._run_diagnosis, fg_color=ACCENT_GREEN,
+                                          text_color="#fff", font=("Segoe UI", 13, "bold"),
+                                          height=38)
         self.diagnose_btn.pack(side="left", padx=5)
         ctk.CTkButton(self.action_frame, text="Clear All", command=self._clear_symptoms,
-                      fg_color="transparent", border_width=1, width=100).pack(side="left", padx=5)
+                      fg_color="transparent", border_width=1, border_color=BORDER_LIGHT,
+                      text_color=TEXT_SECONDARY, width=90).pack(side="left", padx=5)
         self.loading_bar = ctk.CTkProgressBar(self.action_frame, mode="indeterminate", width=150)
         self.loading_bar.pack(side="right", padx=10)
 
@@ -220,11 +294,11 @@ class ModernMedicalGUI:
         self.symptom_widgets = {}
         self._system_blocks: list[tuple[str, ctk.CTkFrame, list]] = []
 
-        for system, symptom_ids in self.controller.symptoms_by_system():
+        for system, symptom_ids in self.manager.symptoms_by_system():
             block = ctk.CTkFrame(self.symptom_container, fg_color="transparent")
             block.pack(fill="x", pady=(8, 4))
-            ctk.CTkLabel(block, text=f"🔹 {system}", font=("Segoe UI", 12, "bold"),
-                         text_color="#00d4ff").pack(anchor="w", padx=5)
+            ctk.CTkLabel(block, text=system.upper(), font=("Segoe UI", 10, "bold"),
+                         text_color=TEXT_MUTED).pack(anchor="w", padx=5, pady=(8, 2))
 
             grid = ctk.CTkFrame(block, fg_color="transparent")
             grid.pack(fill="x", padx=10)
@@ -233,7 +307,8 @@ class ModernMedicalGUI:
 
             rows: list[tuple[str, ctk.CTkFrame]] = []
             for i, symptom in enumerate(symptom_ids):
-                row_frame = ctk.CTkFrame(grid, fg_color="#1e212b", corner_radius=8)
+                row_frame = ctk.CTkFrame(grid, fg_color=BG_CARD, corner_radius=6,
+                                         border_width=1, border_color=BORDER_COLOR)
                 row, col = divmod(i, 2)
                 row_frame.grid(row=row, column=col, padx=4, pady=3, sticky="ew")
 
@@ -241,7 +316,8 @@ class ModernMedicalGUI:
                 checkbox = ctk.CTkCheckBox(
                     row_frame, text=humanize(symptom), variable=variable,
                     command=lambda s=symptom, v=variable: self._on_symptom_toggle(s, v),
-                    font=("Segoe UI", 11))
+                    font=("Segoe UI", 11), text_color=TEXT_PRIMARY,
+                    fg_color=ACCENT_BLUE, hover_color=ACCENT_BLUE)
                 checkbox.pack(side="left", padx=8, pady=6)
 
                 severity_var = ctk.StringVar(
@@ -249,7 +325,8 @@ class ModernMedicalGUI:
                                               "Moderate"))
                 menu = ctk.CTkOptionMenu(
                     row_frame, values=SEVERITY_LABELS, variable=severity_var,
-                    width=95, height=26, fg_color="#2a2d3e", button_color="#3a3f5c",
+                    width=95, height=26, fg_color=BORDER_LIGHT, button_color=BG_CARD,
+                    text_color=TEXT_PRIMARY,
                     command=lambda value, s=symptom: self._update_severity(s, value))
                 if symptom in self.selected_symptoms:
                     menu.pack(side="right", padx=6, pady=6)
@@ -320,7 +397,13 @@ class ModernMedicalGUI:
             self.nlp_feedback.configure(text="⚠️ Please enter your symptoms first")
             return
 
-        extraction = self.extractor.extract(text)
+        # Clear previous symptom selections so new text starts fresh.
+        for widget in self.symptom_widgets.values():
+            widget["var"].set(False)
+            widget["menu"].pack_forget()
+        self.selected_symptoms.clear()
+
+        extraction = self.manager.analyze_text(text)
         self.last_extraction = extraction if extraction.has_any() else None
 
         if not extraction.has_any():
@@ -376,81 +459,87 @@ class ModernMedicalGUI:
 
     def _diagnose_thread(self, selected, age):
         try:
-            results = self.controller.diagnose(selected, age=age)
+            session = DiagnosisSession(
+                symptoms=selected,
+                patient_age=age,
+                temperature_c=getattr(self.last_extraction, "temperature_c", None),
+                durations=getattr(self.last_extraction, "durations", {}) or {},
+            )
+            outcome = self.manager.diagnose(session)
         except Exception as exc:  # noqa: BLE001 - report engine failures in the UI
             self.root.after(0, lambda: self._show_engine_error(exc))
             return
-        self.root.after(0, lambda: self._render_results(results, selected, age))
+        self.root.after(0, lambda: self._render_outcome(outcome))
 
     def _show_engine_error(self, exc):
         self.loading_bar.stop()
         self.diagnose_btn.configure(state="normal")
         messagebox.showerror("Diagnosis failed", str(exc))
 
-    def _render_results(self, results, selected, age):
+    def _render_outcome(self, outcome):
+        """Render a DiagnosisOutcome from the manager."""
         self.loading_bar.stop()
         self.diagnose_btn.configure(state="normal")
-        self.current_results = results
+        self.current_results = outcome.results
         for w in self.diag_panel.winfo_children():
             w.destroy()
 
-        if not results:
+        if not outcome.has_results:
             ctk.CTkLabel(self.diag_panel,
                          text="No matching diseases found. Try adding more symptoms.",
-                         font=("Segoe UI", 13), text_color="#888").pack(pady=30)
+                         font=("Segoe UI", 13), text_color=TEXT_MUTED).pack(pady=30)
             self.exp_text.delete("1.0", "end")
             self.triage_label.pack_forget()
             return
 
-        for i, result in enumerate(results[:3], 1):
+        for i, result in enumerate(outcome.results[:3], 1):
             self._create_diag_card(result, i)
-        self._generate_explanation(results, selected, age)
 
-        # Persist to history with severity / temperature context.
-        top = results[0]
-        extraction = self.last_extraction
-        extras: dict[str, Any] = {}
-        if selected:
-            extras["severities"] = {s: level for s, level in selected.items()}
-        if extraction is not None:
-            if extraction.temperature_c is not None:
-                extras["temperature_c"] = extraction.temperature_c
-            if extraction.durations:
-                extras["durations"] = extraction.durations
-        self.patient.add_diagnosis(
-            list(selected.keys()),
-            [r.as_dict() for r in results],
-            top.disease,
-            top.confidence,
-            extras or None,
-        )
+        # Triage indicator
+        color = TRIAGE_COLORS.get(outcome.triage_level, ACCENT_GREEN)
+        self.triage_label.configure(text=f"  Next step: {outcome.triage_title}  ",
+                                    text_color="#fff", fg_color=color)
+        self.triage_label.pack(fill="x", padx=15, pady=(10, 0))
+
+        # Explanation text
+        text = outcome.explanation
+        if outcome.triage_title:
+            text += f"\n\nNEXT STEPS ({outcome.triage_title.upper()}):\n{outcome.triage_guidance}"
+        top = outcome.top_result
+        if top and top.risk_note:
+            text = f"Risk note: {top.risk_note}\n\n{text}"
+        self.exp_text.delete("1.0", "end")
+        self.exp_text.insert("1.0", text)
 
     def _create_diag_card(self, result: DiagnosisResult, rank: int):
         level, color = self._likelihood(result.confidence)
-        card = ctk.CTkFrame(self.diag_panel, fg_color="#1e212b", corner_radius=10,
-                            border_width=1, border_color="#333")
-        card.pack(fill="x", pady=8, padx=8)
+        card = ctk.CTkFrame(self.diag_panel, fg_color=BG_CARD, corner_radius=8,
+                            border_width=1, border_color=BORDER_COLOR)
+        card.pack(fill="x", pady=6, padx=6)
 
         header = ctk.CTkFrame(card, fg_color="transparent")
-        header.pack(fill="x", padx=12, pady=8)
-        ctk.CTkLabel(header, text=f"#{rank} {result.name}",
-                     font=("Segoe UI", 14, "bold")).pack(side="left")
+        header.pack(fill="x", padx=14, pady=(10, 4))
+        ctk.CTkLabel(header, text=f"#{rank}  {result.name}",
+                     font=("Segoe UI", 14, "bold"),
+                     text_color=TEXT_PRIMARY).pack(side="left")
         if result.emergency:
-            ctk.CTkLabel(header, text="🚨 EMERGENCY", text_color="#e74c3c",
-                         font=("Segoe UI", 11, "bold"),
-                         fg_color="#2a1a1a").pack(side="right", padx=5)
+            ctk.CTkLabel(header, text=" EMERGENCY ", text_color="#fff",
+                         font=("Segoe UI", 10, "bold"),
+                         fg_color=ACCENT_RED, corner_radius=4).pack(side="right", padx=5)
 
-        progress = ctk.CTkProgressBar(card, width=350, progress_color=color, fg_color="#2a2d3e")
-        progress.pack(fill="x", padx=15, pady=(0, 4))
+        progress = ctk.CTkProgressBar(card, width=350, progress_color=color,
+                                      fg_color=BORDER_COLOR, height=8,
+                                      corner_radius=4)
+        progress.pack(fill="x", padx=14, pady=(2, 6))
         progress.set(min(result.confidence / 100.0, 1.0))
 
         risk = "elevated" if result.risk_note else ""
-        meta = (f"Likelihood: {level} | {result.confidence}% | "
-                f"Category: {result.category.title()} | Matched {result.matched}/{result.total}")
+        meta = (f"Likelihood: {level}  ·  {result.confidence}%  ·  "
+                f"{result.category.title()}  ·  Matched {result.matched}/{result.total}")
         if risk:
-            meta += f" | Age-risk: {risk}"
+            meta += f"  ·  Age-risk: {risk}"
         ctk.CTkLabel(card, text=meta, font=("Segoe UI", 11),
-                     text_color="#aaa").pack(anchor="w", padx=15, pady=(0, 8))
+                     text_color=TEXT_SECONDARY).pack(anchor="w", padx=14, pady=(0, 10))
 
     @staticmethod
     def _likelihood(confidence: int) -> tuple[str, str]:
@@ -459,25 +548,7 @@ class ModernMedicalGUI:
                 return level, color
         return "High", "#e74c3c"
 
-    def _generate_explanation(self, results, selected, age):
-        top = results[0]
-        level, title, guidance = self.controller.triage(
-            results, selected,
-            temperature_c=getattr(self.last_extraction, "temperature_c", None),
-            durations=getattr(self.last_extraction, "durations", None),
-        )
-        color = TRIAGE_COLORS[level]
-        self.triage_label.configure(text=f"🩺 Next step: {title}", text_color="#000",
-                                    fg_color=color)
-        self.triage_label.pack(fill="x", padx=15, pady=(10, 0))
-
-        explanation = self.controller.build_explanation(top.disease, selected,
-                                                        self.last_extraction)
-        text = f"{explanation}\n\nNEXT STEPS ({title.upper()}):\n{guidance}"
-        if top.risk_note:
-            text = f"Risk note: {top.risk_note}\n\n{text}"
-        self.exp_text.delete("1.0", "end")
-        self.exp_text.insert("1.0", text)
+    # (triage + explanation now handled by manager.diagnose() → _render_outcome)
 
     # ==================================================================
     # Disease info page
@@ -485,8 +556,8 @@ class ModernMedicalGUI:
     def _build_disease_info(self):
         info_frame = ctk.CTkFrame(self.content_area, fg_color="transparent")
         self.frames["disease_info"] = info_frame
-        ctk.CTkLabel(info_frame, text="📖 Disease Encyclopedia",
-                     font=("Segoe UI", 20, "bold")).pack(pady=15)
+        ctk.CTkLabel(info_frame, text="Disease Encyclopedia",
+                     font=("Segoe UI", 20, "bold"), text_color=TEXT_PRIMARY).pack(pady=15)
 
         main_grid = ctk.CTkFrame(info_frame, fg_color="transparent")
         main_grid.pack(fill="both", expand=True, padx=20, pady=10)
@@ -494,32 +565,33 @@ class ModernMedicalGUI:
         main_grid.grid_columnconfigure(1, weight=2)
         main_grid.grid_rowconfigure(0, weight=1)
 
-        list_frame = ctk.CTkFrame(main_grid, fg_color="#161922", corner_radius=12)
+        list_frame = ctk.CTkFrame(main_grid, fg_color=BG_SURFACE, corner_radius=10)
         list_frame.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
-        ctk.CTkLabel(list_frame, text="All Diseases", font=("Segoe UI", 14, "bold")).pack(pady=10)
+        ctk.CTkLabel(list_frame, text="All Diseases", font=("Segoe UI", 14, "bold"),
+                     text_color=TEXT_PRIMARY).pack(pady=10)
         self.disease_listbox = ctk.CTkScrollableFrame(list_frame, fg_color="transparent")
         self.disease_listbox.pack(fill="both", expand=True, padx=5, pady=5)
 
-        self.detail_frame = ctk.CTkFrame(main_grid, fg_color="#161922", corner_radius=12)
+        self.detail_frame = ctk.CTkFrame(main_grid, fg_color=BG_SURFACE, corner_radius=10)
         self.detail_frame.grid(row=0, column=1, sticky="nsew")
         self.detail_title = ctk.CTkLabel(self.detail_frame,
                                          text="Select a disease to view details",
-                                         font=("Segoe UI", 16, "bold"), text_color="#888")
+                                         font=("Segoe UI", 16, "bold"), text_color=TEXT_MUTED)
         self.detail_title.pack(pady=40)
         self.detail_content = ctk.CTkTextbox(self.detail_frame, font=("Segoe UI", 12),
-                                             wrap="word", fg_color="#1e212b",
-                                             text_color="#d0d0d0")
+                                             wrap="word", fg_color=BG_CARD,
+                                             text_color=TEXT_PRIMARY)
         self.detail_content.pack_forget()
 
-        for disease_id in self.controller.all_diseases():
+        for disease_id in self.manager.all_diseases():
             btn = ctk.CTkButton(self.disease_listbox, text=humanize(disease_id),
-                                fg_color="transparent", hover_color="#2a2d3e",
+                                fg_color="transparent", hover_color=BG_CARD,
                                 font=("Segoe UI", 13), anchor="w", height=40,
                                 command=lambda d=disease_id: self._show_disease_detail(d))
             btn.pack(fill="x", padx=5, pady=2)
 
     def _show_disease_detail(self, disease_id):
-        defn = self.controller.disease_info(disease_id)
+        defn = self.manager.disease_info(disease_id)
         self.detail_title.configure(text=defn.name)
         self.detail_content.pack(fill="both", expand=True, padx=15, pady=(0, 15))
         self.detail_content.delete("1.0", "end")
@@ -543,18 +615,20 @@ class ModernMedicalGUI:
     def _build_history(self):
         hist = ctk.CTkFrame(self.content_area, fg_color="transparent")
         self.frames["history"] = hist
-        ctk.CTkLabel(hist, text="Diagnosis History", font=("Segoe UI", 20, "bold")).pack(pady=15)
+        ctk.CTkLabel(hist, text="Diagnosis History", font=("Segoe UI", 20, "bold"),
+                     text_color=TEXT_PRIMARY).pack(pady=15)
 
-        self.hist_tree = ctk.CTkFrame(hist, fg_color="#161922", corner_radius=12)
+        self.hist_tree = ctk.CTkFrame(hist, fg_color=BG_SURFACE, corner_radius=10)
         self.hist_tree.pack(fill="both", expand=True, padx=20, pady=10)
         self.hist_list = ctk.CTkTextbox(self.hist_tree, font=("Segoe UI", 12), wrap="word",
-                                        fg_color="#161922", text_color="#d0d0d0")
+                                        fg_color=BG_SURFACE, text_color=TEXT_PRIMARY)
         self.hist_list.pack(fill="both", expand=True, padx=10, pady=10)
 
         ctk.CTkButton(hist, text="Refresh History", command=self._refresh_history,
-                      fg_color="#2a2d3e").pack(pady=10)
+                      fg_color=BORDER_LIGHT, text_color=TEXT_PRIMARY).pack(pady=10)
         ctk.CTkButton(hist, text="Clear History", command=self._clear_history,
-                      fg_color="transparent", border_width=1).pack(pady=5)
+                      fg_color="transparent", border_width=1, border_color=BORDER_LIGHT,
+                      text_color=TEXT_SECONDARY).pack(pady=5)
         self._refresh_history()
 
     def _refresh_history(self):
@@ -588,41 +662,46 @@ class ModernMedicalGUI:
     def _build_profile(self):
         prof = ctk.CTkFrame(self.content_area, fg_color="transparent")
         self.frames["profile"] = prof
-        ctk.CTkLabel(prof, text="Patient Profile", font=("Segoe UI", 20, "bold")).pack(pady=15)
+        ctk.CTkLabel(prof, text="Patient Profile", font=("Segoe UI", 20, "bold"),
+                     text_color=TEXT_PRIMARY).pack(pady=15)
 
-        form = ctk.CTkFrame(prof, fg_color="#161922", corner_radius=12)
+        form = ctk.CTkFrame(prof, fg_color=BG_SURFACE, corner_radius=10)
         form.pack(fill="both", expand=True, padx=40, pady=10)
 
         self.profile_vars = {}
         fields = [("Name", "name"), ("Age", "age"), ("Gender", "gender"), ("Blood Type", "blood_type")]
         for i, (label, key) in enumerate(fields):
-            ctk.CTkLabel(form, text=label, font=("Segoe UI", 13)).grid(
+            ctk.CTkLabel(form, text=label, font=("Segoe UI", 13),
+                         text_color=TEXT_PRIMARY).grid(
                 row=i, column=0, padx=20, pady=10, sticky="w")
             if key in ("gender", "blood_type"):
                 values = (["Male", "Female", "Other"] if key == "gender"
                           else ["Unknown", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
                 var = ctk.StringVar()
                 ctk.CTkOptionMenu(form, variable=var, values=values, width=200,
-                                  fg_color="#1e212b").grid(row=i, column=1, padx=20, pady=10, sticky="w")
+                                  fg_color=BG_CARD, text_color=TEXT_PRIMARY).grid(
+                row=i, column=1, padx=20, pady=10, sticky="w")
             else:
                 var = ctk.StringVar()
                 ctk.CTkEntry(form, textvariable=var, width=200,
-                             fg_color="#1e212b").grid(row=i, column=1, padx=20, pady=10, sticky="w")
+                             fg_color=BG_CARD, text_color=TEXT_PRIMARY,
+                             border_color=BORDER_COLOR).grid(
+                row=i, column=1, padx=20, pady=10, sticky="w")
             self.profile_vars[key] = var
 
-        ctk.CTkLabel(form, text="💡 Age is used to flag conditions with higher "
-                                "risk in your age group (e.g. flu, pneumonia in the elderly).",
-                     font=("Segoe UI", 11), text_color="#aaa").grid(
+        ctk.CTkLabel(form, text="Age is used to flag conditions with higher risk in your age group "
+                                "(e.g. flu, pneumonia in the elderly).",
+                     font=("Segoe UI", 11), text_color=TEXT_SECONDARY).grid(
             row=len(fields), column=0, columnspan=2, padx=20, pady=(0, 6), sticky="w")
 
         btn_frame = ctk.CTkFrame(form, fg_color="transparent")
         btn_frame.grid(row=len(fields) + 1, column=0, columnspan=2, pady=20)
         ctk.CTkButton(btn_frame, text="Save Profile", command=self._save_profile,
-                      fg_color="#00d4ff", text_color="#000").pack(side="left", padx=10)
+                      fg_color=ACCENT_BLUE, text_color="#fff").pack(side="left", padx=10)
 
-        self.saved_patients_btn = ctk.CTkButton(btn_frame, text="👥 Saved Patients",
+        self.saved_patients_btn = ctk.CTkButton(btn_frame, text="Saved Patients",
                                                 command=self._show_saved_patients,
-                                                fg_color="#2a2d3e")
+                                                fg_color=BORDER_LIGHT, text_color=TEXT_PRIMARY)
         self._load_profile_data()
         self._update_saved_patients_button()
 
@@ -646,13 +725,94 @@ class ModernMedicalGUI:
 
     def _update_patient_label(self):
         name = self.patient.get_current_profile().get("name", "Guest")
-        self.patient_label.configure(text=f"👤 Patient: {name if name else 'Guest'}")
+        if not name:
+            name = "Guest"
+        self.patient_label.configure(text=f"👤 Patient: {name}")
+        if self.patient.is_guest:
+            self.profile_badge.configure(text="  GUEST", fg_color=ACCENT_AMBER)
+            self.guest_note.pack(side="left", padx=(8, 0))
+        else:
+            self.profile_badge.configure(text="  SIGNED IN", fg_color=ACCENT_GREEN)
+            self.guest_note.pack_forget()
 
     def _update_saved_patients_button(self):
         if len(self.patient.saved_profiles) > 0:
             self.saved_patients_btn.pack(side="left", padx=10)
         else:
             self.saved_patients_btn.pack_forget()
+
+    def _show_profile_chooser(self):
+        """Open a profile chooser dialog for sign-in or switching profiles."""
+        if hasattr(self, "profile_chooser_win") and self.profile_chooser_win.winfo_exists():
+            self.profile_chooser_win.lift()
+            return
+        self.profile_chooser_win = ctk.CTkToplevel(self.root)
+        self.profile_chooser_win.title("Sign In / Choose Profile")
+        self.profile_chooser_win.geometry("420x520")
+        self.profile_chooser_win.configure(fg_color=BG_SURFACE)
+        self.profile_chooser_win.transient(self.root)
+        self.profile_chooser_win.grab_set()
+
+        ctk.CTkLabel(self.profile_chooser_win, text="Sign In / Choose Profile",
+                     font=("Segoe UI", 18, "bold"), text_color=TEXT_PRIMARY).pack(pady=15)
+
+        # Guest option
+        guest_frame = ctk.CTkFrame(self.profile_chooser_win, fg_color=BG_CARD, corner_radius=8)
+        guest_frame.pack(fill="x", padx=15, pady=5)
+        ctk.CTkLabel(guest_frame, text="Continue as Guest",
+                     font=("Segoe UI", 13, "bold"), text_color=TEXT_PRIMARY).pack(side="left", padx=10, pady=10)
+        ctk.CTkLabel(guest_frame, text="Records won't be saved",
+                     font=("Segoe UI", 10), text_color=TEXT_MUTED).pack(side="left", padx=5)
+        ctk.CTkButton(guest_frame, text="Use", width=60, height=28,
+                      fg_color=ACCENT_AMBER, text_color="#000",
+                      command=self._choose_guest).pack(side="right", padx=10, pady=10)
+
+        # Saved profiles
+        list_frame = ctk.CTkScrollableFrame(self.profile_chooser_win, fg_color="transparent")
+        list_frame.pack(fill="both", expand=True, padx=15, pady=5)
+
+        profiles = self.patient.saved_profiles
+        if profiles:
+            ctk.CTkLabel(list_frame, text="Saved Profiles:",
+                         font=("Segoe UI", 13, "bold"), text_color=TEXT_SECONDARY).pack(anchor="w", pady=(5, 5))
+            for i, profile in enumerate(profiles):
+                name = profile.get("name", "Unknown")
+                age = profile.get("age", "N/A")
+                gender = profile.get("gender", "N/A")
+                frame = ctk.CTkFrame(list_frame, fg_color=BG_CARD, corner_radius=8)
+                frame.pack(fill="x", pady=3, padx=3)
+                ctk.CTkLabel(frame, text=f"{name}  ·  Age: {age}  ·  {gender}",
+                             font=("Segoe UI", 12), text_color=TEXT_PRIMARY).pack(side="left", padx=10, pady=8)
+                ctk.CTkButton(frame, text="Load", width=60, height=28,
+                              command=lambda idx=i: self._choose_profile(idx)).pack(side="right", padx=10, pady=8)
+        else:
+            ctk.CTkLabel(list_frame, text="No saved profiles yet.\nSave a profile from the Patient Profile page first.",
+                         font=("Segoe UI", 12), text_color=TEXT_MUTED).pack(pady=20)
+
+        # Create new profile shortcut
+        ctk.CTkButton(self.profile_chooser_win, text="Create New Profile",
+                      command=self._create_profile_from_chooser,
+                      fg_color=BORDER_LIGHT, text_color=TEXT_PRIMARY, height=36).pack(pady=(5, 15), padx=15, fill="x")
+
+    def _choose_guest(self):
+        self.patient.set_guest()
+        self._load_profile_data()
+        self._update_patient_label()
+        self._close_profile_chooser()
+
+    def _choose_profile(self, index):
+        if self.patient.switch_profile(index):
+            self._load_profile_data()
+            self._update_patient_label()
+            self._close_profile_chooser()
+
+    def _create_profile_from_chooser(self):
+        self._close_profile_chooser()
+        self.show_frame("profile")
+
+    def _close_profile_chooser(self):
+        if hasattr(self, "profile_chooser_win") and self.profile_chooser_win.winfo_exists():
+            self.profile_chooser_win.destroy()
 
     def _show_saved_patients(self):
         if hasattr(self, "saved_patients_win") and self.saved_patients_win.winfo_exists():
@@ -661,31 +821,31 @@ class ModernMedicalGUI:
         self.saved_patients_win = ctk.CTkToplevel(self.root)
         self.saved_patients_win.title("Saved Patients")
         self.saved_patients_win.geometry("400x500")
-        self.saved_patients_win.configure(fg_color="#161922")
+        self.saved_patients_win.configure(fg_color=BG_SURFACE)
         self.saved_patients_win.transient(self.root)
         self.saved_patients_win.grab_set()
         ctk.CTkLabel(self.saved_patients_win, text="Saved Patients",
-                     font=("Segoe UI", 18, "bold")).pack(pady=15)
+                     font=("Segoe UI", 18, "bold"), text_color=TEXT_PRIMARY).pack(pady=15)
 
         list_frame = ctk.CTkScrollableFrame(self.saved_patients_win, fg_color="transparent")
         list_frame.pack(fill="both", expand=True, padx=15, pady=10)
         profiles = self.patient.saved_profiles
         if not profiles:
-            ctk.CTkLabel(list_frame, text="No saved patients yet.", text_color="#888").pack(pady=20)
+            ctk.CTkLabel(list_frame, text="No saved patients yet.", text_color=TEXT_MUTED).pack(pady=20)
             return
         for i, profile in enumerate(profiles):
             name = profile.get("name", "Unknown")
             age = profile.get("age", "N/A")
             gender = profile.get("gender", "N/A")
-            frame = ctk.CTkFrame(list_frame, fg_color="#1e212b", corner_radius=8)
+            frame = ctk.CTkFrame(list_frame, fg_color=BG_CARD, corner_radius=8)
             frame.pack(fill="x", pady=5, padx=5)
-            ctk.CTkLabel(frame, text=f"👤 {name} (Age: {age}, {gender})",
-                         font=("Segoe UI", 12)).pack(side="left", padx=10, pady=8)
+            ctk.CTkLabel(frame, text=f"{name}  ·  Age: {age}  ·  {gender}",
+                         font=("Segoe UI", 12), text_color=TEXT_PRIMARY).pack(side="left", padx=10, pady=8)
             btn_frame = ctk.CTkFrame(frame, fg_color="transparent")
             btn_frame.pack(side="right", padx=5)
             ctk.CTkButton(btn_frame, text="Load", width=60, height=28,
                           command=lambda idx=i: self._load_patient(idx)).pack(side="left", padx=2)
-            ctk.CTkButton(btn_frame, text="Delete", width=60, height=28, fg_color="#e74c3c",
+            ctk.CTkButton(btn_frame, text="Delete", width=60, height=28, fg_color=ACCENT_RED, text_color="#fff",
                           command=lambda idx=i: self._delete_patient(idx)).pack(side="left", padx=2)
 
     def _load_patient(self, index):
@@ -716,32 +876,19 @@ class ModernMedicalGUI:
         if not self.current_results:
             messagebox.showwarning("Export", "Run a diagnosis first.")
             return
-        top = self.current_results[0]
-        defn = self.controller.disease_info(top.disease)
-        info = {
-            "name": defn.name,
-            "category": defn.category,
-            "description": defn.description,
-            "recommendation": defn.recommendation,
-            "is_emergency": defn.emergency,
-        }
-        explanation = self.controller.build_explanation(
-            top.disease, dict(self.selected_symptoms), self.last_extraction)
-        extras: dict[str, Any] = {}
-        if self.last_extraction is not None:
-            if self.last_extraction.temperature_c is not None:
-                extras["temperature_c"] = self.last_extraction.temperature_c
-            if self.last_extraction.durations:
-                extras["durations"] = self.last_extraction.durations
+        session = DiagnosisSession(
+            symptoms=dict(self.selected_symptoms),
+            temperature_c=getattr(self.last_extraction, "temperature_c", None),
+            durations=getattr(self.last_extraction, "durations", {}) or {},
+        )
+        outcome = DiagnosisOutcome(
+            results=self.current_results,
+            top_disease=self.current_results[0].disease if self.current_results else None,
+            explanation=self.exp_text.get("1.0", "end-1c"),
+        )
         try:
-            path = self.exporter.export(
-                self.export_format.get().lower(),
-                self.patient.get_current_profile(),
-                dict(self.selected_symptoms),
-                [r.as_dict() for r in self.current_results],
-                explanation,
-                info,
-                extras or None,
+            path = self.manager.export_report(
+                self.export_format.get().lower(), session, outcome,
             )
         except RuntimeError as exc:  # e.g. reportlab missing
             messagebox.showerror("Export failed", str(exc))
@@ -754,5 +901,6 @@ class ModernMedicalGUI:
 
 
 if __name__ == "__main__":
-    app = ModernMedicalGUI()
+    from bootstrap import create_manager
+    app = ModernMedicalGUI(manager=create_manager())
     app.run()
