@@ -1,0 +1,953 @@
+{
+  "_meta": {
+    "name": "MedInfer AI knowledge base",
+    "version": "2.0",
+    "license": "AGPL-3.0-or-later",
+    "note": "Single source of truth for the expert system content. medical_kb.pl facts are generated from this file by generate_kb.py."
+  },
+  "body_systems": {
+    "General": {
+      "symptoms": {
+        "fever": {
+          "aliases": [
+            "feverish",
+            "high temperature",
+            "high temp",
+            "running a temperature"
+          ],
+          "red_flag": false
+        },
+    "fatigue": {
+      "aliases": [
+        "tired",
+        "tiredness",
+        "exhaustion",
+        "exhausted",
+        "lethargy",
+        "low energy",
+        "weakness"
+      ],
+          "red_flag": false
+        },
+        "chills": {
+          "aliases": [
+            "shivering",
+            "shivers"
+          ],
+          "red_flag": false
+        },
+        "sweating": {
+          "aliases": [
+            "sweaty",
+            "excessive sweating",
+            "clammy"
+          ],
+          "red_flag": false
+        },
+        "weight_loss": {
+          "aliases": [
+            "lost weight",
+            "losing weight",
+            "unexplained weight loss"
+          ],
+          "red_flag": false
+        },
+        "loss_of_appetite": {
+          "aliases": [
+            "no appetite",
+            "poor appetite",
+            "not hungry",
+            "not eating"
+          ],
+          "red_flag": false
+        },
+        "night_sweats": {
+          "aliases": [
+            "night sweats",
+            "sweating at night",
+            "drenching sweats at night"
+          ],
+          "red_flag": false
+        }
+      }
+    },
+    "Respiratory": {
+      "symptoms": {
+        "cough": {
+          "aliases": [
+            "coughing",
+            "hacking cough"
+          ],
+          "red_flag": false
+        },
+        "shortness_of_breath": {
+          "aliases": [
+            "difficulty breathing",
+            "trouble breathing",
+            "hard to breathe",
+            "breathlessness",
+            "short of breath",
+            "can't catch breath"
+          ],
+          "red_flag": true
+        },
+        "sore_throat": {
+          "aliases": [
+            "throat pain",
+            "scratchy throat",
+            "painful throat"
+          ],
+          "red_flag": false
+        },
+        "wheezing": {
+          "aliases": [],
+          "red_flag": false
+        },
+        "runny_nose": {
+          "aliases": [],
+          "red_flag": false
+        },
+        "nasal_congestion": {
+          "aliases": [
+            "stuffy nose",
+            "blocked nose",
+            "congested nose",
+            "sinus congestion"
+          ],
+          "red_flag": false
+        },
+        "sneezing": {
+          "aliases": [
+            "sneezes"
+          ],
+          "red_flag": false
+        },
+        "coughing_blood": {
+          "aliases": [
+            "coughing up blood",
+            "blood in cough",
+            "blood in sputum",
+            "coughing blood"
+          ],
+          "red_flag": true
+        }
+      }
+    },
+    "Neurological": {
+      "symptoms": {
+        "headache": {
+          "aliases": [],
+          "red_flag": false
+        },
+        "dizziness": {
+          "aliases": [
+            "dizzy",
+            "lightheaded",
+            "light headed",
+            "vertigo",
+            "feeling faint"
+          ],
+          "red_flag": false
+        },
+        "blurred_vision": {
+          "aliases": [
+            "blurry vision",
+            "cloudy vision",
+            "vision is blurry"
+          ],
+          "red_flag": false
+        },
+        "sensitivity_to_light": {
+          "aliases": [
+            "photophobia",
+            "light sensitive",
+            "sensitive to light"
+          ],
+          "red_flag": false
+        },
+        "confusion": {
+          "aliases": [
+            "disoriented",
+            "disorientation",
+            "mental confusion",
+            "not thinking clearly"
+          ],
+          "red_flag": true
+        },
+        "insomnia": {
+          "aliases": [
+            "can't sleep",
+            "cannot sleep",
+            "trouble sleeping",
+            "sleeplessness",
+            "unable to sleep"
+          ],
+          "red_flag": false
+        },
+        "difficulty_concentrating": {
+          "aliases": [
+            "trouble focusing",
+            "can't focus",
+            "brain fog",
+            "hard to concentrate"
+          ],
+          "red_flag": false
+        }
+      }
+    },
+    "Gastrointestinal": {
+      "symptoms": {
+        "nausea": {
+          "aliases": [
+            "queasy",
+            "feeling sick",
+            "sick to the stomach",
+            "nauseous",
+            "feeling nauseous"
+          ],
+          "red_flag": false
+        },
+        "vomiting": {
+          "aliases": [
+            "throwing up",
+            "puking",
+            "being sick"
+          ],
+          "red_flag": false
+        },
+        "diarrhea": {
+          "aliases": [
+            "loose stools",
+            "loose motion",
+            "frequent stools",
+            "watery stools"
+          ],
+          "red_flag": false
+        },
+        "abdominal_pain": {
+          "aliases": [
+            "stomach pain",
+            "stomach ache",
+            "tummy ache",
+            "belly pain",
+            "abdominal cramps",
+            "cramping"
+          ],
+          "red_flag": false
+        },
+        "bloating": {
+          "aliases": [
+            "bloated",
+            "gassy",
+            "trapped wind"
+          ],
+          "red_flag": false
+        }
+      }
+    },
+    "Musculoskeletal": {
+      "symptoms": {
+        "body_ache": {
+          "aliases": [
+            "body aches",
+            "aching body",
+            "whole body pain",
+            "generalized aches"
+          ],
+          "red_flag": false
+        },
+        "joint_pain": {
+          "aliases": [
+            "joint aches",
+            "aching joints",
+            "painful joints"
+          ],
+          "red_flag": false
+        },
+        "muscle_pain": {
+          "aliases": [
+            "muscle aches",
+            "aching muscles",
+            "sore muscles"
+          ],
+          "red_flag": false
+        },
+        "back_pain": {
+          "aliases": [
+            "backache",
+            "lower back pain",
+            "aching back"
+          ],
+          "red_flag": false
+        },
+        "stiff_joints": {
+          "aliases": [
+            "joint stiffness",
+            "stiff joints",
+            "rigid joints"
+          ],
+          "red_flag": false
+        }
+      }
+    },
+    "Skin": {
+      "symptoms": {
+        "rash": {
+          "aliases": [
+            "skin rash",
+            "hives",
+            "red spots",
+            "skin eruption"
+          ],
+          "red_flag": false
+        },
+        "pale_skin": {
+          "aliases": [
+            "paleness",
+            "pallor",
+            "looking pale"
+          ],
+          "red_flag": false
+        },
+        "yellowing_of_skin": {
+          "aliases": [
+            "yellow skin",
+            "jaundice",
+            "yellowing eyes",
+            "jaundiced"
+          ],
+          "red_flag": false
+        }
+      }
+    },
+    "Cardiovascular": {
+      "symptoms": {
+        "chest_pain": {
+          "aliases": [
+            "chest discomfort",
+            "pain in the chest",
+            "tight chest"
+          ],
+          "red_flag": true
+        },
+        "rapid_heartbeat": {
+          "aliases": [
+            "racing heart",
+            "heart palpitations",
+            "fast heartbeat",
+            "palpitations"
+          ],
+          "red_flag": false
+        },
+        "cold_hands_and_feet": {
+          "aliases": [
+            "cold extremities",
+            "cold hands",
+            "cold feet"
+          ],
+          "red_flag": false
+        }
+      }
+    },
+    "Urinary": {
+      "symptoms": {
+        "frequent_urination": {
+          "aliases": [
+            "frequent peeing",
+            "urinating often",
+            "passing urine often"
+          ],
+          "red_flag": false
+        },
+        "burning_urination": {
+          "aliases": [
+            "painful urination",
+            "burning when urinating",
+            "burning urination",
+            "stinging urine"
+          ],
+          "red_flag": false
+        },
+        "blood_in_urine": {
+          "aliases": [
+            "bloody urine",
+            "blood in the urine"
+          ],
+          "red_flag": false
+        }
+      }
+    },
+    "Psychological": {
+      "symptoms": {
+        "sadness": {
+          "aliases": [
+            "feeling sad",
+            "low mood",
+            "feeling down",
+            "unhappy"
+          ],
+          "red_flag": false
+        },
+        "loss_of_interest": {
+          "aliases": [
+            "no interest",
+            "anhedonia",
+            "not enjoying things",
+            "lost interest"
+          ],
+          "red_flag": false
+        }
+      }
+    },
+    "ENT": {
+      "symptoms": {
+        "itchy_eyes": {
+          "aliases": [
+            "itching eyes",
+            "eye itching"
+          ],
+          "red_flag": false
+        },
+        "red_eyes": {
+          "aliases": [
+            "bloodshot eyes",
+            "redness in the eyes"
+          ],
+          "red_flag": false
+        },
+        "swollen_glands": {
+          "aliases": [
+            "swollen lymph nodes",
+            "enlarged glands",
+            "swollen nodes"
+          ],
+          "red_flag": false
+        },
+        "facial_pain": {
+          "aliases": [
+            "face pain",
+            "facial pressure",
+            "face ache"
+          ],
+          "red_flag": false
+        }
+      }
+    },
+    "Other": {
+      "symptoms": {
+        "increased_thirst": {
+          "aliases": [
+            "excessive thirst",
+            "very thirsty",
+            "always thirsty"
+          ],
+          "red_flag": false
+        }
+      }
+    }
+  },
+  "diseases": {
+    "flu": {
+      "category": "viral",
+      "description": "Influenza is a viral infection that attacks the respiratory system. It is highly contagious and spreads through droplets.",
+      "recommendation": "Rest, stay hydrated, take antiviral medications if prescribed, and isolate to prevent spreading.",
+      "emergency": false,
+      "symptoms": [
+        "fever",
+        "cough",
+        "headache",
+        "fatigue",
+        "body_ache",
+        "chills",
+        "sore_throat"
+      ],
+      "weights": {
+        "fever": 1.2,
+        "body_ache": 1.1
+      },
+      "risk_factors": {
+        "age": [
+          "child",
+          "elderly"
+        ]
+      }
+    },
+    "cold": {
+      "category": "viral",
+      "description": "The common cold is a viral infection of the upper respiratory tract. It is usually mild and self-limiting.",
+      "recommendation": "Rest, drink warm fluids, use saline nasal drops, and take over-the-counter cold remedies.",
+      "emergency": false,
+      "symptoms": [
+        "runny_nose",
+        "sneezing",
+        "sore_throat",
+        "cough",
+        "headache",
+        "fatigue",
+        "nasal_congestion"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "covid19": {
+      "category": "viral",
+      "description": "COVID-19 is a respiratory illness caused by the SARS-CoV-2 virus. It can range from mild to severe and is highly contagious.",
+      "recommendation": "Isolate immediately, monitor oxygen levels, seek medical attention if breathing becomes difficult.",
+      "emergency": true,
+      "symptoms": [
+        "fever",
+        "cough",
+        "shortness_of_breath",
+        "fatigue",
+        "body_ache",
+        "headache",
+        "loss_of_appetite",
+        "sore_throat"
+      ],
+      "weights": {
+        "shortness_of_breath": 1.5,
+        "loss_of_appetite": 1.1
+      },
+      "risk_factors": {
+        "age": [
+          "elderly"
+        ]
+      }
+    },
+    "malaria": {
+      "category": "parasitic",
+      "description": "Malaria is a parasitic disease transmitted through mosquito bites. It causes recurrent fever and can be life-threatening.",
+      "recommendation": "Seek immediate medical treatment, take antimalarial drugs, and use mosquito nets.",
+      "emergency": true,
+      "symptoms": [
+        "fever",
+        "chills",
+        "sweating",
+        "headache",
+        "nausea",
+        "vomiting",
+        "body_ache"
+      ],
+      "weights": {
+        "chills": 1.3
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "dengue": {
+      "category": "viral",
+      "description": "Dengue is a mosquito-borne viral infection causing severe flu-like symptoms and sometimes hemorrhagic fever.",
+      "recommendation": "Seek medical care, stay hydrated, avoid aspirin, and monitor platelet count.",
+      "emergency": true,
+      "symptoms": [
+        "fever",
+        "headache",
+        "joint_pain",
+        "muscle_pain",
+        "rash",
+        "nausea",
+        "vomiting",
+        "swollen_glands"
+      ],
+      "weights": {
+        "rash": 1.2,
+        "joint_pain": 1.2
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "typhoid": {
+      "category": "bacterial",
+      "description": "Typhoid fever is a bacterial infection caused by Salmonella typhi, spread through contaminated food and water.",
+      "recommendation": "Consult a doctor for antibiotics, maintain hygiene, and drink only boiled water.",
+      "emergency": false,
+      "symptoms": [
+        "fever",
+        "headache",
+        "fatigue",
+        "nausea",
+        "vomiting",
+        "diarrhea",
+        "loss_of_appetite",
+        "abdominal_pain"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "migraine": {
+      "category": "neurological",
+      "description": "Migraine is a neurological condition causing intense, debilitating headaches often accompanied by nausea and sensitivity to light.",
+      "recommendation": "Rest in a dark room, avoid triggers, take prescribed migraine medication.",
+      "emergency": false,
+      "symptoms": [
+        "headache",
+        "nausea",
+        "vomiting",
+        "blurred_vision",
+        "dizziness",
+        "sensitivity_to_light"
+      ],
+      "weights": {
+        "sensitivity_to_light": 1.3
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "asthma": {
+      "category": "respiratory",
+      "description": "Asthma is a chronic respiratory condition causing airway inflammation and narrowing, leading to breathing difficulties.",
+      "recommendation": "Use inhaler as prescribed, avoid triggers, and seek emergency care if breathing worsens.",
+      "emergency": false,
+      "symptoms": [
+        "shortness_of_breath",
+        "wheezing",
+        "chest_pain",
+        "cough",
+        "fatigue"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "pneumonia": {
+      "category": "respiratory",
+      "description": "Pneumonia is an infection that inflames the air sacs in one or both lungs, which may fill with fluid.",
+      "recommendation": "Seek medical attention, take prescribed antibiotics, rest, and stay hydrated.",
+      "emergency": true,
+      "symptoms": [
+        "fever",
+        "cough",
+        "shortness_of_breath",
+        "chest_pain",
+        "fatigue",
+        "chills",
+        "sweating",
+        "nausea"
+      ],
+      "weights": {
+        "shortness_of_breath": 1.4,
+        "chest_pain": 1.3
+      },
+      "risk_factors": {
+        "age": [
+          "child",
+          "elderly"
+        ]
+      }
+    },
+    "diabetes": {
+      "category": "metabolic",
+      "description": "Diabetes is a metabolic disorder characterized by high blood sugar levels over a prolonged period.",
+      "recommendation": "Monitor blood sugar regularly, follow a diabetic diet, exercise, and take prescribed medication.",
+      "emergency": false,
+      "symptoms": [
+        "frequent_urination",
+        "increased_thirst",
+        "fatigue",
+        "blurred_vision",
+        "weight_loss"
+      ],
+      "weights": {
+        "frequent_urination": 1.3,
+        "increased_thirst": 1.3
+      },
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "hypertension": {
+      "category": "cardiovascular",
+      "description": "Hypertension or high blood pressure is a chronic condition where blood pressure in the arteries is elevated.",
+      "recommendation": "Reduce salt intake, exercise regularly, manage stress, and take prescribed medication.",
+      "emergency": false,
+      "symptoms": [
+        "headache",
+        "dizziness",
+        "chest_pain",
+        "shortness_of_breath",
+        "blurred_vision"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": [
+          "middle_aged",
+          "elderly"
+        ]
+      }
+    },
+    "anemia": {
+      "category": "hematologic",
+      "description": "Anemia is a condition where the body lacks enough healthy red blood cells to carry adequate oxygen to tissues.",
+      "recommendation": "Increase iron-rich foods, take iron supplements, and consult a doctor for underlying causes.",
+      "emergency": false,
+      "symptoms": [
+        "fatigue",
+        "pale_skin",
+        "dizziness",
+        "shortness_of_breath",
+        "cold_hands_and_feet",
+        "headache"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "allergy": {
+      "category": "immune",
+      "description": "Allergies are immune system reactions to foreign substances that are typically harmless to most people.",
+      "recommendation": "Avoid allergens, take antihistamines, and use nasal sprays for relief.",
+      "emergency": false,
+      "symptoms": [
+        "sneezing",
+        "itchy_eyes",
+        "runny_nose",
+        "rash",
+        "cough",
+        "nasal_congestion"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "chickenpox": {
+      "category": "viral",
+      "description": "Chickenpox is a highly contagious viral infection causing an itchy rash with small fluid-filled blisters.",
+      "recommendation": "Isolate, avoid scratching, use calamine lotion, and take fever reducers.",
+      "emergency": false,
+      "symptoms": [
+        "fever",
+        "rash",
+        "fatigue",
+        "headache",
+        "loss_of_appetite"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "measles": {
+      "category": "viral",
+      "description": "Measles is a highly contagious viral infection causing a distinctive red rash, fever, and cough.",
+      "recommendation": "Isolate, rest, stay hydrated, and seek medical care for complications.",
+      "emergency": false,
+      "symptoms": [
+        "fever",
+        "rash",
+        "cough",
+        "runny_nose",
+        "red_eyes",
+        "fatigue"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "hepatitis_a": {
+      "category": "viral",
+      "description": "Hepatitis A is a viral liver infection transmitted through contaminated food or water.",
+      "recommendation": "Rest, avoid alcohol, eat a balanced diet, and consult a doctor.",
+      "emergency": true,
+      "symptoms": [
+        "fever",
+        "fatigue",
+        "nausea",
+        "vomiting",
+        "abdominal_pain",
+        "yellowing_of_skin",
+        "loss_of_appetite"
+      ],
+      "weights": {
+        "yellowing_of_skin": 1.5
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "tuberculosis": {
+      "category": "bacterial",
+      "description": "Tuberculosis is a bacterial infection that primarily affects the lungs and spreads through airborne droplets.",
+      "recommendation": "Seek immediate medical treatment, complete full antibiotic course, and isolate initially.",
+      "emergency": true,
+      "symptoms": [
+        "cough",
+        "fever",
+        "night_sweats",
+        "weight_loss",
+        "fatigue",
+        "chest_pain",
+        "coughing_blood"
+      ],
+      "weights": {
+        "coughing_blood": 1.5,
+        "night_sweats": 1.3
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "bronchitis": {
+      "category": "respiratory",
+      "description": "Bronchitis is inflammation of the bronchial tubes, causing persistent cough with mucus.",
+      "recommendation": "Rest, stay hydrated, use a humidifier, and avoid smoke exposure.",
+      "emergency": false,
+      "symptoms": [
+        "cough",
+        "fatigue",
+        "chest_pain",
+        "shortness_of_breath",
+        "wheezing",
+        "fever"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "sinusitis": {
+      "category": "inflammatory",
+      "description": "Sinusitis is inflammation of the sinuses, usually caused by infection, leading to facial pain and congestion.",
+      "recommendation": "Use saline nasal irrigation, steam inhalation, and decongestants.",
+      "emergency": false,
+      "symptoms": [
+        "facial_pain",
+        "nasal_congestion",
+        "headache",
+        "runny_nose",
+        "fatigue",
+        "fever"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "urinary_tract_infection": {
+      "category": "bacterial",
+      "description": "UTI is a bacterial infection in any part of the urinary system, most commonly the bladder.",
+      "recommendation": "Drink plenty of water, urinate frequently, and take prescribed antibiotics.",
+      "emergency": false,
+      "symptoms": [
+        "burning_urination",
+        "frequent_urination",
+        "abdominal_pain",
+        "blood_in_urine",
+        "fever"
+      ],
+      "weights": {
+        "burning_urination": 1.4,
+        "blood_in_urine": 1.3
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "gastroenteritis": {
+      "category": "gastrointestinal",
+      "description": "Gastroenteritis is inflammation of the stomach and intestines, causing diarrhea and vomiting.",
+      "recommendation": "Stay hydrated with oral rehydration solutions, eat bland foods, and rest.",
+      "emergency": false,
+      "symptoms": [
+        "diarrhea",
+        "vomiting",
+        "nausea",
+        "abdominal_pain",
+        "fever",
+        "bloating"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "heat_stroke": {
+      "category": "environmental",
+      "description": "Heat stroke is a severe heat-related illness occurring when body temperature rises rapidly and the body cannot cool down.",
+      "recommendation": "Move to a cool place, apply cold water, seek emergency medical care immediately.",
+      "emergency": true,
+      "symptoms": [
+        "fever",
+        "headache",
+        "dizziness",
+        "nausea",
+        "confusion",
+        "rapid_heartbeat"
+      ],
+      "weights": {
+        "confusion": 1.5,
+        "rapid_heartbeat": 1.3
+      },
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "insomnia": {
+      "category": "neurological",
+      "description": "Insomnia is a sleep disorder characterized by difficulty falling or staying asleep.",
+      "recommendation": "Maintain regular sleep schedule, avoid screens before bed, and practice relaxation.",
+      "emergency": false,
+      "symptoms": [
+        "insomnia",
+        "fatigue",
+        "headache",
+        "difficulty_concentrating",
+        "dizziness"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "depression": {
+      "category": "psychological",
+      "description": "Depression is a mental health disorder causing persistent feelings of sadness and loss of interest.",
+      "recommendation": "Seek professional counseling, maintain social connections, and consider therapy.",
+      "emergency": false,
+      "symptoms": [
+        "sadness",
+        "loss_of_interest",
+        "fatigue",
+        "insomnia",
+        "difficulty_concentrating",
+        "loss_of_appetite"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": []
+      }
+    },
+    "arthritis": {
+      "category": "musculoskeletal",
+      "description": "Arthritis is inflammation of one or more joints, causing pain and stiffness that worsens with age.",
+      "recommendation": "Exercise gently, apply heat/cold therapy, and consult a rheumatologist.",
+      "emergency": false,
+      "symptoms": [
+        "joint_pain",
+        "stiff_joints",
+        "fatigue",
+        "back_pain",
+        "muscle_pain"
+      ],
+      "weights": {},
+      "risk_factors": {
+        "age": [
+          "elderly"
+        ]
+      }
+    }
+  }
+}
