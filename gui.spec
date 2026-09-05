@@ -1,11 +1,15 @@
 # -*- mode: python ; coding: utf-8 -*-
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# PyInstaller spec for the desktop app. The knowledge base and its catalog
+# are bundled as data files so a built executable can consult them.
 
 
 a = Analysis(
     ['gui.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('medical_kb.pl', '.'), ('kb_catalog.json', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
