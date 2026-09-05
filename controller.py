@@ -47,6 +47,36 @@ class MedicalController:
                 "from https://www.swi-prolog.org/ and make sure 'swipl' is on your PATH."
             ) from exc
 
+        # Performance: precompute disease-symptom graph for Python-side
+        # confidence calculation, eliminating per-disease Prolog queries.
+        self._disease_graph: dict[str, dict] = self._precompute_disease_graph()
+
+    # ------------------------------------------------------------------
+    # Precomputation
+    # ------------------------------------------------------------------
+    _SEV_FACTOR = {"mild": 0.8, "moderate": 1.0, "severe": 1.25}
+
+    def _precompute_disease_graph(self) -> dict[str, dict]:
+        """Build a Python-side lookup of disease→symptoms with weights.
+
+        This avoids 3 Prolog round-trips per disease during diagnosis.
+        The KB facts are static, so we compute once at init.
+        """
+        graph: dict[str, dict] = {}
+        for disease_id, defn in self.catalog.diseases.items():
+            symptoms = {}
+            total_weight = 0.0
+            for symptom in defn.symptoms:
+                weight = defn.weight(symptom)
+                symptoms[symptom] = weight
+                total_weight += weight
+            graph[disease_id] = {
+                "symptoms": symptoms,
+                "total_weight": total_weight,
+                "total_symptoms": len(defn.symptoms),
+            }
+        return graph
+
     # ------------------------------------------------------------------
     # Catalog access for the GUI (no Prolog round-trips needed)
     # ------------------------------------------------------------------
@@ -98,14 +128,37 @@ class MedicalController:
         candidates = [str(r["D"]) for r in self.prolog.query("possible_disease(D)")]
         band = age_band(age)
 
+        # Performance: use precomputed graph for confidence calculation.
+        # Only the candidate selection uses Prolog; confidence/matched/total
+        # are computed in Python, eliminating ~165 Prolog round-trips per diagnosis.
+        selected_set = set(selected)
+
         results: list[DiagnosisResult] = []
         for disease_id in candidates:
             defn = self.catalog.diseases.get(disease_id)
             if defn is None:
                 continue  # catalog is authoritative; never query content prolog lacks
-            confidence = self._query_int(f"confidence({disease_id}, C)")
-            matched = self._query_int(f"matched_symptoms({disease_id}, M)")
-            total = self._query_int(f"total_symptoms({disease_id}, T)")
+
+            graph = self._disease_graph.get(disease_id)
+            if graph is None:
+                continue
+
+            # Calculate matched symptoms and weighted confidence in Python
+            matched_weight = 0.0
+            matched_count = 0
+            for symptom, base_weight in graph["symptoms"].items():
+                if symptom in selected_set:
+                    matched_count += 1
+                    severity = selected.get(symptom, "moderate")
+                    factor = self._SEV_FACTOR.get(severity, 1.0)
+                    matched_weight += base_weight * factor
+
+            total_weight = graph["total_weight"]
+            confidence = (
+                round((matched_weight / total_weight) * 100) if total_weight > 0 else 0
+            )
+            confidence = min(100, confidence)
+            total = graph["total_symptoms"]
 
             risk_note: Optional[str] = None
             base_confidence = confidence
@@ -120,7 +173,7 @@ class MedicalController:
                 disease=disease_id,
                 confidence=confidence,
                 base_confidence=base_confidence,
-                matched=matched,
+                matched=matched_count,
                 total=total,
                 category=defn.category,
                 emergency=defn.emergency,
