@@ -1,1 +1,11 @@
+# Freebuff agent workspace metadata
 /.freebuff
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+
+# Local patient data - personal health information must never be committed.
+# The folder itself is kept in the repo via data/.gitkeep.
+data/*
+!data/.gitkeep
