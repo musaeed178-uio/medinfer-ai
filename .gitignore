@@ -1,1 +1,6 @@
 /.freebuff
+/.
+/__pycache__
+/core/__pycache__
+/data
+/tests/__pycache__
