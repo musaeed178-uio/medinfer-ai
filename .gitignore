@@ -9,3 +9,8 @@ __pycache__/
 # The folder itself is kept in the repo via data/.gitkeep.
 data/*
 !data/.gitkeep
+/.
+/__pycache__
+/core/__pycache__
+/data
+/tests/__pycache__
